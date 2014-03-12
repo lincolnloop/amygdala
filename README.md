@@ -60,7 +60,8 @@ If you're using npm, you can just `npm install amygdala`. Otherwise download amy
   store.add('users', {'username': 'gdala67', 'active': false});
 
   // update an existing user
-  // NOTE: At the moment we rely on the url attribute containing the API endpoint for the user.
+  // NOTE: At the moment we rely on the url attribute containing
+  // the API endpoint for the user.
   store.update('users', {'url': '/api/v2/user/32/', 'active': true});
 
   // delete a user
