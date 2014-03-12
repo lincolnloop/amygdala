@@ -39,7 +39,7 @@
     // ------------------------------
     // Internal data sync methods
     // ------------------------------
-    this._set = function(type, response) {
+    this._set = function(type, response, responseType) {
       //console.log(type, response, responseType, xhr);
       // Adds or Updates an item of `type` in this._store.
       //
@@ -50,6 +50,9 @@
 
       // initialize store for this type (if needed)
       // and store it under `store` for easy access.
+      if (responseType && responseType === "error") {
+        return;
+      }
       var store = this._store[type] ? this._store[type] : this._store[type] = {};
       var schema = this._schema[type];
 
