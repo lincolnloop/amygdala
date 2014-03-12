@@ -1,13 +1,14 @@
 {
   "name": "amygdala",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Amygdala browser library",
   "keywords": [
     "localStorage",
     "store",
+    "browser",
+    "cache"
     "api",
     "ajax",
-    "browser cache",
     "offline"
   ],
   "homepage": "https://github.com/lincolnloop/amygdala",
