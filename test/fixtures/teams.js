@@ -1,0 +1,42 @@
+module.exports = [
+  {
+    "url":"/api/v2/team/9/",
+    "name":"Test Sandbox",
+    "slug":"test-sandbox",
+    "description":"",
+    "unread":0,
+    "date_created":"2012-01-04T21:51:18.514",
+    "members":[
+      {
+        "is_owner":false,
+        "url":"/api/v2/team/9/member/66238278d2ce670dcb448f96258dc732/",
+        "date_updated":"2012-01-09T00:00:00",
+        "is_admin":false,
+        "user":"/api/v2/user/66238278d2ce670dcb448f96258dc732/",
+        "date_created":"2012-01-09T00:00:00",
+        "notify":2
+      },
+      {
+        "is_owner":false,
+        "url":"/api/v2/team/9/member/c17ec52b925fc0fe2f4eadf1f10b0bf7/",
+        "date_updated":"2012-01-09T00:00:00",
+        "is_admin":false,
+        "user":"/api/v2/user/c17ec52b925fc0fe2f4eadf1f10b0bf7/",
+        "date_created":"2012-01-09T00:00:00",
+        "notify":2
+      },
+      {
+        "is_owner":true,
+        "url":"/api/v2/team/9/member/f31abb30271cdecae75a6227128c8fd9/",
+        "date_updated":"2012-01-24T20:43:43.180",
+        "is_admin":true,
+        "user":"/api/v2/user/f31abb30271cdecae75a6227128c8fd9/",
+        "date_created":"2012-01-09T00:00:00",
+        "notify":2
+      },
+    ],
+    "channel_token":"dabe371eb42f42eb9b82ff471fd73d1b",
+    "organization":"Lincoln Loop",
+    "post_email":"test-sandbox@example.com"
+  }
+];

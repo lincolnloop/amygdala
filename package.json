@@ -1,0 +1,53 @@
+{
+  "name": "amygdala",
+  "version": "0.0.1",
+  "description": "Amygdala browser library",
+  "keywords": [
+    "localStorage",
+    "store",
+    "api",
+    "ajax",
+    "browser cache",
+    "offline"
+  ],
+  "homepage": "https://github.com/lincolnloop/amygdala",
+  "bugs": {
+    "url": "https://github.com/lincolnloop/amygdala/issues"
+  },
+  "author": "Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lincolnloop/amygdala.git"
+  },
+  "main": "amygdala.js",
+  "files": [
+    "amygdala.js"
+  ],
+  "scripts": {
+    "test": "mocha --reporter spec --ui bdd"
+  },
+  "testling": {
+    "harness": "mocha-bdd",
+    "files": "test/*.test.js",
+    "browsers": [
+      "ie/9..latest",
+      "chrome/26..latest",
+      "firefox/22..latest",
+      "safari/latest",
+      "opera/12.0..latest",
+      "iphone/latest",
+      "ipad/latest",
+      "android-browser/latest"
+    ]
+  },
+  "license": "BSD",
+  "devDependencies": {
+    "chai": "~1.9.0",
+    "mocha": "~1.17.1"
+  },
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "backbone": "~1.1.2",
+    "loglevel": "~0.5.0"
+  }
+}
