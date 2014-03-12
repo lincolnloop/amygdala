@@ -6,7 +6,7 @@
     "localStorage",
     "store",
     "browser",
-    "cache"
+    "cache",
     "api",
     "ajax",
     "offline"
