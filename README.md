@@ -10,9 +10,9 @@ query your API server and also handles session caching on the browser (and event
 ## The overview
 
 Amygdala requires you to define a schema of how your API and data relations look like.
-With the schema defined, Amygdala gives you some very `simple methods to access your API`,
-and `stores the data locally` in the browser session (and eventually in localStorage) for
-`easy and fast data access`. 
+With the schema defined, Amygdala gives you some very **simple methods to access your API**,
+and **stores the data locally** in the browser session (and eventually in localStorage) for
+**easy and fast data access**.
 
 NOTE: Amygdala is under heavy development, and schema support is limited.
 
