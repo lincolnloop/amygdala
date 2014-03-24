@@ -2,17 +2,18 @@ Amygdala
 ========
 
 Amygdala is a library for API driven web applications that makes it simple to
-query your API server and also handles session caching on the browser (and eventually offline through localStorage).
+query your API server and also handles session caching on the browser (and
+eventually offline through localStorage).
 
 [![browser support](https://ci.testling.com/lincolnloop/amygdala.png)
 ](https://ci.testling.com/lincolnloop/amygdala)
 
 ## The overview
 
-Amygdala requires you to define a schema of how your API and data relations look like.
-With the schema defined, Amygdala gives you some very **simple methods to access your API**,
-and **stores the data locally** in the browser session (and eventually in localStorage) for
-**easy and fast data access**.
+Amygdala requires you to define a schema of how your API and data relations
+look like. With the schema defined, Amygdala gives you some very **simple
+methods to access your API**, and **stores the data locally** in the browser
+session (and eventually in localStorage) for **easy and fast data access**.
 
 NOTE: Amygdala is under heavy development, and schema support is limited.
 
@@ -20,7 +21,8 @@ NOTE: Amygdala is under heavy development, and schema support is limited.
 
 ### 1. Install Amygdala
 
-If you're using npm, you can just `npm install amygdala`. Otherwise download amygdala.js from the [github repo](https://github.com/lincolnloop/amygdala).
+If you're using npm, you can just `npm install amygdala`. Otherwise, download
+the browser version of from the [dist directory](https://github.com/lincolnloop/amygdala/tree/master/dist).
 
 ### 2. Create your instance and define your schema
 
