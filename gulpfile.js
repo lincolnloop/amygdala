@@ -16,7 +16,7 @@ gulp.task('dist', function() {
 gulp.task('build', function() {
   var production = process.env.NODE_ENV === 'production';
 
-  return gulp.src('./amygdala.js', {read: false})
+  return gulp.src('./amygdala.js')
 
     // Rename the destination file
     .pipe(rename(pkg.name + '.js'))

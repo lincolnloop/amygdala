@@ -4,13 +4,6 @@
  * <%= pkg.homepage %>
  * Licensed under the <%= pkg.licenses[0].type %> license.
  * <%= pkg.licenses[0].url %>
- *
- * Forked from:
- *
- *   Backbone.js (commit 722bee4684)
- *     (c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
- *     (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- *     https://github.com/jashkenas/backbone
  */
 <% var commonDeps = _.map(_.keys(deps), function(dep) {return "require('" + dep + "')";}); %>
 <% var globalDeps = _.map(_.values(deps), function(dep) {return "root." + dep;}); %>
