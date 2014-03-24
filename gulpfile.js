@@ -3,21 +3,21 @@
 var _ = require('lodash');
 var browserify = require('gulp-browserify');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var pkg = require('./package.json');
 var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
 var wrap = require('gulp-wrap');
 
-gulp.task('dist', function() {
+gulp.task('default', function() {
   // Set the environment to production
   process.env.NODE_ENV = 'production';
-  return gulp.start('build');
+  gulp.start('distribute');
 });
 
 gulp.task('build', function() {
   var production = process.env.NODE_ENV === 'production';
 
-  return gulp.src('./amygdala.js')
+  var stream = gulp.src('./amygdala.js')
 
     // Browserify, and add source maps if this isn't a production build
     .pipe(browserify({debug: !production}))
@@ -35,10 +35,11 @@ gulp.task('build', function() {
     })
 
     // Rename the destination file
-    .pipe(rename(pkg.name + '.js'))
+    .pipe(rename(pkg.name + '.js'));
 
-    // Wrap in a UMD template if production
-    .pipe(production ? wrap({src: 'templates/umd.jst'}, {
+  if (production) {
+    // Wrap in a UMD template
+    stream.pipe(wrap({src: 'templates/umd.jst'}, {
       pkg: pkg,
       namespace: 'Amygdala',
       deps: {
@@ -47,8 +48,18 @@ gulp.task('build', function() {
         'loglevel': 'loglevel'
       },
       expose: 'amygdala'
-    }, {'imports': {'_': _}}) : gutil.noop())
+    }, {'imports': {'_': _}}));
+  }
 
-    // Dist directory if production, otherwise the ignored build dir
-    .pipe(gulp.dest(production ? 'dist/' : 'build/'));
+  // Dist directory if production, otherwise the ignored build dir
+  stream.pipe(gulp.dest(production ? 'dist/' : 'build/'));
+
+  return stream;
+});
+
+gulp.task('distribute', ['build'], function() {
+  gulp.src('dist/' + pkg.name + '.js')
+    .pipe(uglify())
+    .pipe(rename(pkg.name + '.min.js'))
+    .pipe(gulp.dest('dist/'));
 });

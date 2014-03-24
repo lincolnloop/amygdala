@@ -4,13 +4,6 @@
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
  * http://github.com/lincolnloop/amygdala/blob/master/LICENSE
- *
- * Forked from:
- *
- *   Backbone.js (commit 722bee4684)
- *     (c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
- *     (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- *     https://github.com/jashkenas/backbone
  */
 
 
@@ -38,6 +31,7 @@
 /*
  * -------- Begin module --------
  */
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"9LYMek":[function(require,module,exports){
 'use strict';
 
 var _ = require('underscore');
@@ -277,6 +271,11 @@ var Amygdala = function(schema) {
 
 module.exports = Amygdala;
 
+},{"backbone":"5kFNoY","loglevel":"3ohSP0","underscore":"ZKusGn"}],"amygdala":[function(require,module,exports){
+module.exports=require('9LYMek');
+},{}],3:[function(require,module,exports){
+module.exports=require("9LYMek")
+},{"backbone":"5kFNoY","loglevel":"3ohSP0","underscore":"ZKusGn"}]},{},[3])
 /*
  * -------- End module --------
  */
