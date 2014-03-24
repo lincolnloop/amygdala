@@ -1,0 +1,48 @@
+/*
+ * Itinerary v<%= pkg.version %>
+ * (c) <%= new Date().getFullYear() %> <%= pkg.author %>
+ * <%= pkg.homepage %>
+ * Licensed under the <%= pkg.licenses[0].type %> license.
+ * <%= pkg.licenses[0].url %>
+ *
+ * Forked from:
+ *
+ *   Backbone.js (commit 722bee4684)
+ *     (c) 2010-2011 Jeremy Ashkenas, DocumentCloud Inc.
+ *     (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ *     https://github.com/jashkenas/backbone
+ */
+<% var commonDeps = _.map(_.keys(deps), function(dep) {return "require('" + dep + "')";}); %>
+<% var globalDeps = _.map(_.values(deps), function(dep) {return "root." + dep;}); %>
+<% var requireMap = _.map(_.pairs(deps), function(dep) {return dep[0] + ': ' + dep[1];}); %>
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(<%= _.keys(deps).join(', ') %>factory);
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(<%= commonDeps.join(', ') %>);
+  } else {
+    // Browser globals (root is window)
+    root.<%= namespace %> = factory(<%= globalDeps.join(', ') %>);
+  }
+}(this, function (<%= _.values(deps).join(', ') %>) {
+
+  // A shim for 'require' so that it will work universally for externals
+  var require = function(name) {
+    return {<%= requireMap.join(', ') %>}[name];
+  };
+
+/*
+ * -------- Begin module --------
+ */
+<%= contents %>
+/*
+ * -------- End module --------
+ */
+
+  return require('<%= expose %>');
+
+}));

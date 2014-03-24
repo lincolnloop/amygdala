@@ -41,7 +41,12 @@
       "android-browser/latest"
     ]
   },
-  "license": "BSD",
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "http://github.com/lincolnloop/amygdala/blob/master/LICENSE"
+    }
+  ],
   "devDependencies": {
     "chai": "~1.9.0",
     "mocha": "~1.17.1"
