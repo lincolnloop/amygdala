@@ -1,11 +1,12 @@
 'use strict';
 
 var _ = require('lodash');
+var browserify = require('gulp-browserify');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var pkg = require('./package.json');
-var wrap = require('gulp-wrap');
 var rename = require('gulp-rename');
+var wrap = require('gulp-wrap');
 
 gulp.task('dist', function() {
   // Set the environment to production
@@ -17,6 +18,21 @@ gulp.task('build', function() {
   var production = process.env.NODE_ENV === 'production';
 
   return gulp.src('./amygdala.js')
+
+    // Browserify, and add source maps if this isn't a production build
+    .pipe(browserify({debug: !production}))
+
+    .on('prebundle', function(bundler) {
+      if (production) {
+        // Externalize dependencies so they aren't included in the build
+        bundler.external('underscore');
+        bundler.external('backbone');
+        bundler.external('loglevel');
+
+        // Export Amygdala as 'amygdala'
+        bundler.require('./amygdala.js', {expose: 'amygdala'});
+      }
+    })
 
     // Rename the destination file
     .pipe(rename(pkg.name + '.js'))

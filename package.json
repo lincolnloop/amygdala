@@ -54,7 +54,8 @@
     "gulp-wrap": "^0.3.0",
     "gulp-util": "^2.2.14",
     "gulp": "^3.5.6",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "gulp-browserify": "^0.5.0"
   },
   "dependencies": {
     "underscore": "^1.6.0",
