@@ -103,7 +103,6 @@ var Amygdala = function(schema) {
     // type: schema key/store (teams, users)
     // response: response to store in local cache
     // responseType: success/fail
-    // xhr: XHR response object
 
     // initialize store for this type (if needed)
     // and store it under `store` for easy access.
@@ -172,14 +171,14 @@ var Amygdala = function(schema) {
     }.bind(this));
   };
 
-  this._remove = function(type, key, responseType, xhr) {
-    log.debug(type, key, responseType, xhr);
+  this._remove = function(type, key, response, responseType) {
+    log.debug(type, key, response, responseType);
     // Removes an item of `type` from this._store.
     //
     // type: schema key/store (teams, users)
     // key: key to remove
+    // response: response to store in local cache
     // responseType: success/fail
-    // xhr: XHR response object
 
     // TODO
   };
