@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "underscore": "^1.6.0",
-    "backbone": "^1.1.2",
-    "loglevel": "^0.6.0"
+    "loglevel": "^0.6.0",
+    "q": "^1.0.1"
   }
 }

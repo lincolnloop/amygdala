@@ -1,9 +1,71 @@
 'use strict';
 
 var _ = require('underscore');
-// TODO: backbone dependency is temporary until we find a better ajax lib
-var backbone = require('backbone');
 var log = require('loglevel');
+var Q = require('q');
+
+
+// ------------------------------
+// Utility functions
+// ------------------------------
+
+function serialize(obj) {
+  // Translates an object to a querystring
+  if (!_.isObject(obj)) {
+    return obj;
+  }
+  var pairs = [];
+  for (var key in obj) {
+    if (!_.isEmpty(obj[key])) {
+      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+    }
+  }
+  return pairs.join('&');
+}
+
+function ajax(method, url, options) {
+  // Sends a GET request, converting the data into a querystring
+  //
+  // method: GET, POST, PUT, DELETE
+  // url: the url to send the request to
+  // options: extra options
+  // - data: converted to a querystring for GET requests
+  // - contentType: a value for the Content-Type request header
+  var query;
+  options = options || {};
+
+  if (!_.isEmpty(options.data)) {
+    query = serialize(options.data);
+    url = url + '?' + query;
+  }
+
+  var request = new XMLHttpRequest();
+  var deferred = Q.defer();
+
+  request.open(method, url, true);
+
+  request.onload = function() {
+    if (request.status === 200) {
+      deferred.resolve(request.response, request.responseType);
+    } else {
+      deferred.reject(new Error('Request failed with status code ' + request.status));
+    }
+  };
+
+  request.onerror = function() {
+    deferred.reject(new Error('Unabe to send request to ' + JSON.stringify(url)));
+  };
+
+  if (!_.isEmpty(options.contentType)) {
+    request.setRequestHeader('Content-Type', options.contentType);
+  }
+
+  request.send();
+
+  return deferred.promise;
+}
+
+
 
 var Amygdala = function(schema) {
   // Session/browser key/value store with remote sync capabilities.
@@ -36,7 +98,6 @@ var Amygdala = function(schema) {
   // Internal data sync methods
   // ------------------------------
   this._set = function(type, response, responseType) {
-    //console.log(type, response, responseType, xhr);
     // Adds or Updates an item of `type` in this._store.
     //
     // type: schema key/store (teams, users)
@@ -112,7 +173,7 @@ var Amygdala = function(schema) {
   };
 
   this._remove = function(type, key, responseType, xhr) {
-    console.log(type, key, responseType, xhr);
+    log.debug(type, key, responseType, xhr);
     // Removes an item of `type` from this._store.
     //
     // type: schema key/store (teams, users)
@@ -132,15 +193,20 @@ var Amygdala = function(schema) {
     // type: schema key/store (teams, users)
     // params: extra queryString params (?team=xpto&user=xyz)
     // options: extra options
-    // -  url: url override
+    // - url: url override
     log.info('store:get', type, params);
-    // request settings
+
+    // Default to the URI for 'type'
+    options = options || {};
+    _.defaults(options, {'url': this._getURI(type)});
+
+    // Request settings
     var settings = {
-      'type': 'GET',
-      'url': options && options.url ? options.url : this._getURI(type),
       'data': params
     };
-    return backbone.ajax(settings).always(_.partial(this._set, type).bind(this));
+
+    return ajax('GET', options.url, settings)
+      .then(_.partial(this._set, type).bind(this));
   };
 
   this.add = function(type, object, options) {
@@ -151,49 +217,61 @@ var Amygdala = function(schema) {
     // options: extra options
     // -  url: url override
     log.info('store:add', type, object);
-    // request settings
+
+    // Default to the URI for 'type'
+    options = options || {};
+    _.defaults(options, {'url': this._getURI(type)});
+
+    // Request settings
     var settings = {
-      'type': 'POST',
-      'url': options && options.url ? options.url : this._getURI(type),
       'data': JSON.stringify(object),
       'contentType': 'application/json'
     };
-    return backbone.ajax(settings).always(_.partial(this._set, type).bind(this));
+
+    return ajax('POST', options.url, settings)
+      .then(_.partial(this._set, type).bind(this));
   };
 
-  this.update = function(type, object, options) {
+  this.update = function(type, object) {
     // POST/PUT request for `object` in `type`
     //
     // type: schema key/store (teams, users)
     // object: object to update local and remote
-    // options: extra options
-    // -  url: url override
-    log.info('store:update', type, object, options);
+    log.info('store:update', type, object);
+
     if (!object.url) {
       throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
     }
+
+    // Request settings
     var settings = {
-      'type': 'PUT',
-      'url': object.url,
       'data': JSON.stringify(object),
       'contentType': 'application/json'
     };
-    return backbone.ajax(settings).always(_.partial(this._set, type).bind(this));
+
+    return ajax('PUT', object.url, settings)
+      .then(_.partial(this._set, type).bind(this));
   };
 
-  this.remove = function(type, object, options) {
+  this.remove = function(type, object) {
     // DELETE request for `object` in `type`
-    log.info('store:delete', type, object, options);
+    //
+    // type: schema key/store (teams, users)
+    // object: object to update local and remote
+    log.info('store:delete', type, object);
+
     if (!object.url) {
       throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');
     }
+
+    // Request settings
     var settings = {
-      'type': 'DELETE',
-      'url': object.url,
       'data': JSON.stringify(object),
       'contentType': 'application/json'
     };
-    return backbone.ajax(settings).always(_.partial(this._remove, type).bind(this));
+
+    return ajax('DELETE', object.url, settings)
+      .then(_.partial(this._remove, type).bind(this));
   };
 
   // ------------------------------
