@@ -173,6 +173,29 @@ describe('Amygdala', function() {
       expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
     });
 
+    it('calls #_set() with the given type', function(done) {
+      sinon.spy(store, '_set');
+
+      var obj = {'name': 'The Alliance'};
+      store.add('teams', obj)
+        .then(function() {
+          expect(store._set).to.have.been.calledWith('teams', 'response');
+
+          // Clean up
+          store._set.restore();
+          done();
+        }).catch(function(error) {
+          // Catch and report errors
+          done(error);
+        });
+
+      // Set the status, then trigger the resolution of the promise so the
+      // 'then' block above is executed.
+      xhr.status = 200;
+      xhr.response = 'response';
+      xhr.onload();
+    });
+
   });
 
   describe('#findAll()', function() {
