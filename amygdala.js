@@ -33,7 +33,7 @@ function ajax(method, url, options) {
   var query;
   options = options || {};
 
-  if (!_.isEmpty(options.data)) {
+  if (!_.isEmpty(options.data) && method === 'GET') {
     query = serialize(options.data);
     url = url + '?' + query;
   }
@@ -59,7 +59,7 @@ function ajax(method, url, options) {
     request.setRequestHeader('Content-Type', options.contentType);
   }
 
-  request.send();
+  request.send(method === 'GET' ? null : options.data);
 
   return deferred.promise;
 }

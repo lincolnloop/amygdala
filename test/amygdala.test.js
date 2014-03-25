@@ -84,7 +84,8 @@ describe('Amygdala', function() {
     // Reset the xhr spy between each test
     xhr = {
       'open': sinon.spy(),
-      'send': sinon.spy()
+      'send': sinon.spy(),
+      'setRequestHeader': sinon.spy()
     };
   });
 
@@ -128,9 +129,11 @@ describe('Amygdala', function() {
 
     it('triggers an Ajax GET request', function() {
       store.get('discussions', {'id': 1});
+
       expect(xhr.open).to.have.been.calledOnce;
       expect(xhr.open).to.have.been.calledWith('GET', 'http://localhost:8000/api/v2/discussion/?id=1', true);
       expect(xhr.send).to.have.been.calledOnce;
+      expect(xhr.send).to.have.been.calledWith(null);
     });
 
     it('calls #_set() with the given type', function(done) {
@@ -153,6 +156,21 @@ describe('Amygdala', function() {
       xhr.status = 200;
       xhr.response = 'response';
       xhr.onload();
+    });
+
+  });
+
+  describe('#add()', function() {
+
+    it('triggers an Ajax POST request', function() {
+      var obj = {'name': 'The Alliance'};
+
+      store.add('teams', obj);
+
+      expect(xhr.open).to.have.been.calledOnce;
+      expect(xhr.open).to.have.been.calledWith('POST', 'http://localhost:8000/api/v2/team/', true);
+      expect(xhr.send).to.have.been.calledOnce;
+      expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
     });
 
   });
