@@ -50,6 +50,9 @@
   "devDependencies": {
     "chai": "^1.9.0",
     "mocha": "^1.17.1",
+    "sinon": "^1.9.0",
+    "sinon-chai": "^2.5.0",
+    "xmlhttprequest": "^1.6.0",
     "lodash": "^2.4.1",
     "gulp-rename": "^1.2.0",
     "gulp-wrap": "^0.3.0",

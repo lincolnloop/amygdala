@@ -66,7 +66,6 @@ function ajax(method, url, options) {
 }
 
 
-
 var Amygdala = function(schema) {
   // Session/browser key/value store with remote sync capabilities.
   //

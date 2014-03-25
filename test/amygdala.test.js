@@ -1,7 +1,9 @@
-/* global describe, it, before */
+/* global describe, it, before, after, beforeEach */
 'use strict';
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
 var Amygdala = require('../amygdala');
 
 // fixtures
@@ -9,9 +11,13 @@ var teamFixtures = require('./fixtures/teams');
 var userFixtures = require('./fixtures/users');
 var discussionFixtures = require('./fixtures/discussions');
 
-describe('Amygdala Tests', function() {
+// Setup
+var expect = chai.expect;
+chai.use(sinonChai);
 
-  var store;
+describe('Amygdala', function() {
+
+  var store, xhr;
 
   var schema = {
     // TODO: Mock API
@@ -62,14 +68,28 @@ describe('Amygdala Tests', function() {
 
   before(function() {
     store = new Amygdala(schema);
-    // TODO: get a better API in place without needing AJAX requests
-    // to populate the store.
     store._set('users', userFixtures);
     store._set('teams', teamFixtures);
     store._set('discussions', discussionFixtures);
+
+    global.XMLHttpRequest = function() {
+      return xhr;
+    };
   });
 
-  describe('#_set', function() {
+  beforeEach(function() {
+    // Reset the xhr spy between each test
+    xhr = {
+      'open': sinon.spy(),
+      'send': sinon.spy()
+    };
+  });
+
+  after(function() {
+    delete global.XMLHttpRequest;
+  });
+
+  describe('#_set()', function() {
 
     it('loads simple models correctly', function() {
       expect(Object.keys(store._store['teams'])).to.have.length(1);
@@ -101,19 +121,28 @@ describe('Amygdala Tests', function() {
 
   });
 
+  describe('#get()', function() {
+
+    it('triggers an Ajax GET request', function() {
+      store.get('discussions', {'id': 1});
+      expect(xhr.open).to.have.been.calledOnce;
+      expect(xhr.open).to.have.been.calledWith('GET', '/api/v2/discussion/?id=1');
+      expect(xhr.send).to.have.been.calledOnce;
+    });
+
+  });
+
   describe('#findAll()', function() {
 
     it('can find a list of type', function() {
-      expect(
-        store.findAll('discussions')
-      ).to.have.length(4);
+      expect(store.findAll('discussions'))
+        .to.have.length(4);
     });
 
 
     it('can find a list of type with filters', function() {
-      expect(
-        store.findAll('discussions', {'intro': 'unicode'})
-      ).to.have.length(1);
+      expect(store.findAll('discussions', {'intro': 'unicode'}))
+        .to.have.length(1);
     });
 
   });
@@ -121,15 +150,13 @@ describe('Amygdala Tests', function() {
   describe('#find()', function() {
 
     it('can find an object by id', function() {
-      expect(
-        store.find('teams', '/api/v2/team/9/').name
-      ).to.equal('Test Sandbox');
+      expect(store.find('teams', '/api/v2/team/9/').name)
+        .to.equal('Test Sandbox');
     });
 
     it('can find an object with filters', function() {
-      expect(
-        store.find('discussions', {'intro': 'unicode'}).title
-      ).to.equal('unicode');
+      expect(store.find('discussions', {'intro': 'unicode'}).title)
+        .to.equal('unicode');
     });
 
   });
