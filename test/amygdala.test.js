@@ -15,7 +15,7 @@ var discussionFixtures = require('./fixtures/discussions');
 // Setup
 var expect = chai.expect;
 chai.use(sinonChai);
-log.setLevel('debug');
+// log.setLevel('debug');
 
 describe('Amygdala', function() {
 
@@ -69,6 +69,7 @@ describe('Amygdala', function() {
   };
 
   before(function() {
+    // Reset the store between each test
     store = new Amygdala(schema);
     store._set('users', userFixtures);
     store._set('teams', teamFixtures);
@@ -132,6 +133,28 @@ describe('Amygdala', function() {
       expect(xhr.send).to.have.been.calledOnce;
     });
 
+    it('calls #_set() with the given type', function(done) {
+      sinon.spy(store, '_set');
+
+      store.get('discussions', {'id': 1})
+        .then(function() {
+          expect(store._set).to.have.been.calledWith('discussions', 'response');
+
+          // Clean up
+          store._set.restore();
+          done();
+        }).catch(function(error) {
+          // Catch and report errors
+          done(error);
+        });
+
+      // Set the status, then trigger the resolution of the promise so the
+      // 'then' block above is executed.
+      xhr.status = 200;
+      xhr.response = 'response';
+      xhr.onload();
+    });
+
   });
 
   describe('#findAll()', function() {
@@ -140,7 +163,6 @@ describe('Amygdala', function() {
       expect(store.findAll('discussions'))
         .to.have.length(4);
     });
-
 
     it('can find a list of type with filters', function() {
       expect(store.findAll('discussions', {'intro': 'unicode'}))

@@ -45,7 +45,7 @@ function ajax(method, url, options) {
 
   request.onload = function() {
     if (request.status === 200) {
-      deferred.resolve(request.response, request.responseType);
+      deferred.resolve(request.response);
     } else {
       deferred.reject(new Error('Request failed with status code ' + request.status));
     }
@@ -95,18 +95,14 @@ var Amygdala = function(schema) {
   // ------------------------------
   // Internal data sync methods
   // ------------------------------
-  this._set = function(type, response, responseType) {
+  this._set = function(type, response) {
     // Adds or Updates an item of `type` in this._store.
     //
     // type: schema key/store (teams, users)
     // response: response to store in local cache
-    // responseType: success/fail
 
     // initialize store for this type (if needed)
     // and store it under `store` for easy access.
-    if (responseType && responseType === "error") {
-      return;
-    }
     var store = this._store[type] ? this._store[type] : this._store[type] = {};
     var schema = this._schema[type];
 
@@ -169,14 +165,13 @@ var Amygdala = function(schema) {
     }.bind(this));
   };
 
-  this._remove = function(type, key, response, responseType) {
-    log.debug('store:_remove', type, key, response, responseType);
+  this._remove = function(type, key, response) {
+    log.debug('store:_remove', type, key, response);
     // Removes an item of `type` from this._store.
     //
     // type: schema key/store (teams, users)
     // key: key to remove
     // response: response to store in local cache
-    // responseType: success/fail
 
     // TODO
   };
