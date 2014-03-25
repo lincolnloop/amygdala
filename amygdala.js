@@ -10,16 +10,15 @@ var Q = require('q');
 // ------------------------------
 
 function serialize(obj) {
+  log.debug('serialize', obj);
   // Translates an object to a querystring
   if (!_.isObject(obj)) {
     return obj;
   }
   var pairs = [];
-  for (var key in obj) {
-    if (!_.isEmpty(obj[key])) {
-      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
-    }
-  }
+  _.each(obj, function(value, key) {
+    pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+  });
   return pairs.join('&');
 }
 
@@ -171,7 +170,7 @@ var Amygdala = function(schema) {
   };
 
   this._remove = function(type, key, response, responseType) {
-    log.debug(type, key, response, responseType);
+    log.debug('store:_remove', type, key, response, responseType);
     // Removes an item of `type` from this._store.
     //
     // type: schema key/store (teams, users)
@@ -192,7 +191,7 @@ var Amygdala = function(schema) {
     // params: extra queryString params (?team=xpto&user=xyz)
     // options: extra options
     // - url: url override
-    log.info('store:get', type, params);
+    log.debug('store:get', type, params);
 
     // Default to the URI for 'type'
     options = options || {};
@@ -214,7 +213,7 @@ var Amygdala = function(schema) {
     // object: object to update local and remote
     // options: extra options
     // -  url: url override
-    log.info('store:add', type, object);
+    log.debug('store:add', type, object);
 
     // Default to the URI for 'type'
     options = options || {};
@@ -235,7 +234,7 @@ var Amygdala = function(schema) {
     //
     // type: schema key/store (teams, users)
     // object: object to update local and remote
-    log.info('store:update', type, object);
+    log.debug('store:update', type, object);
 
     if (!object.url) {
       throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
@@ -256,7 +255,7 @@ var Amygdala = function(schema) {
     //
     // type: schema key/store (teams, users)
     // object: object to update local and remote
-    log.info('store:delete', type, object);
+    log.debug('store:delete', type, object);
 
     if (!object.url) {
       throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');

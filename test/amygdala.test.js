@@ -5,6 +5,7 @@ var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var Amygdala = require('../amygdala');
+var log = require('loglevel');
 
 // fixtures
 var teamFixtures = require('./fixtures/teams');
@@ -14,6 +15,7 @@ var discussionFixtures = require('./fixtures/discussions');
 // Setup
 var expect = chai.expect;
 chai.use(sinonChai);
+log.setLevel('debug');
 
 describe('Amygdala', function() {
 
@@ -126,7 +128,7 @@ describe('Amygdala', function() {
     it('triggers an Ajax GET request', function() {
       store.get('discussions', {'id': 1});
       expect(xhr.open).to.have.been.calledOnce;
-      expect(xhr.open).to.have.been.calledWith('GET', '/api/v2/discussion/?id=1');
+      expect(xhr.open).to.have.been.calledWith('GET', 'http://localhost:8000/api/v2/discussion/?id=1', true);
       expect(xhr.send).to.have.been.calledOnce;
     });
 
