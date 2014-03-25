@@ -236,6 +236,44 @@ describe('Amygdala', function() {
 
   });
 
+  describe('#remove()', function() {
+
+    it('triggers an Ajax DELETE request', function() {
+      var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
+
+      store.remove('messages', obj);
+
+      expect(xhr.open).to.have.been.calledOnce;
+      expect(xhr.open).to.have.been.calledWith('DELETE', '/orgrimmar/', true);
+      expect(xhr.send).to.have.been.calledOnce;
+      expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
+    });
+
+    it('calls #_remove() with the given type', function(done) {
+      sinon.spy(store, '_remove');
+
+      var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
+      store.remove('messages', obj)
+        .then(function() {
+          expect(store._remove).to.have.been.calledWith('messages', 'response');
+
+          // Clean up
+          store._remove.restore();
+          done();
+        }).catch(function(error) {
+          // Catch and report errors
+          done(error);
+        });
+
+      // Set the status, then trigger the resolution of the promise so the
+      // 'then' block above is executed.
+      xhr.status = 200;
+      xhr.response = 'response';
+      xhr.onload();
+    });
+
+  });
+
   describe('#findAll()', function() {
 
     it('can find a list of type', function() {

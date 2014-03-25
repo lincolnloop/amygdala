@@ -165,12 +165,11 @@ var Amygdala = function(schema) {
     }.bind(this));
   };
 
-  this._remove = function(type, key, response) {
-    log.debug('store:_remove', type, key, response);
+  this._remove = function(type, response) {
+    log.debug('store:_remove', type, response);
     // Removes an item of `type` from this._store.
     //
     // type: schema key/store (teams, users)
-    // key: key to remove
     // response: response to store in local cache
 
     // TODO
