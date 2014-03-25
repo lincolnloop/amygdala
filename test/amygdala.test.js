@@ -198,6 +198,44 @@ describe('Amygdala', function() {
 
   });
 
+  describe('#update()', function() {
+
+    it('triggers an Ajax PUT request', function() {
+      var obj = {'title': 'Rise of the Horde', 'url': '/draenor/'};
+
+      store.update('messages', obj);
+
+      expect(xhr.open).to.have.been.calledOnce;
+      expect(xhr.open).to.have.been.calledWith('PUT', '/draenor/', true);
+      expect(xhr.send).to.have.been.calledOnce;
+      expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
+    });
+
+    it('calls #_set() with the given type', function(done) {
+      sinon.spy(store, '_set');
+
+      var obj = {'title': 'Rise of the Horde', 'url': '/draenor/'};
+      store.update('messages', obj)
+        .then(function() {
+          expect(store._set).to.have.been.calledWith('messages', 'response');
+
+          // Clean up
+          store._set.restore();
+          done();
+        }).catch(function(error) {
+          // Catch and report errors
+          done(error);
+        });
+
+      // Set the status, then trigger the resolution of the promise so the
+      // 'then' block above is executed.
+      xhr.status = 200;
+      xhr.response = 'response';
+      xhr.onload();
+    });
+
+  });
+
   describe('#findAll()', function() {
 
     it('can find a list of type', function() {
