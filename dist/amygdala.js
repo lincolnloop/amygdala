@@ -1,3 +1,37 @@
+/*
+ * Amygdala v0.0.5
+ * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
+ * https://github.com/lincolnloop/amygdala
+ * Licensed under the BSD license.
+ * http://github.com/lincolnloop/amygdala/blob/master/LICENSE
+ */
+
+
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(underscore, backbone, loglevelfactory);
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(require('underscore'), require('backbone'), require('loglevel'));
+  } else {
+    // Browser globals (root is window)
+    root.Amygdala = factory(root._, root.backbone, root.loglevel);
+  }
+}(this, function (_, backbone, loglevel) {
+
+  // A shim for 'require' so that it will work universally for externals
+  var require = function(name) {
+    return {underscore: _, backbone: backbone, loglevel: loglevel}[name];
+  };
+
+/*
+ * -------- Begin module --------
+ */
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"9LYMek":[function(require,module,exports){
 'use strict';
 
 var _ = require('underscore');
@@ -236,3 +270,16 @@ var Amygdala = function(schema) {
 };
 
 module.exports = Amygdala;
+
+},{"backbone":"5kFNoY","loglevel":"3ohSP0","underscore":"ZKusGn"}],"amygdala":[function(require,module,exports){
+module.exports=require('9LYMek');
+},{}],3:[function(require,module,exports){
+module.exports=require("9LYMek")
+},{"backbone":"5kFNoY","loglevel":"3ohSP0","underscore":"ZKusGn"}]},{},[3])
+/*
+ * -------- End module --------
+ */
+
+  return require('amygdala');
+
+}));

@@ -1,0 +1,27 @@
+{
+  "bitwise": true,
+  "curly": true,
+  "eqeqeq": true,
+  "esnext": true,
+  "expr": true,
+  "forin": false,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "loopfunc": true,
+  "newcap": false,
+  "noarg": true,
+  "quotmark": false,
+  "regexp": true,
+  "scripturl": true,
+  "smarttabs": true,
+  "strict": true,
+  "sub": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+
+  // Predefined globals that JSHint will ignore.
+  "node": true,
+  "browser": true
+}

@@ -1,6 +1,6 @@
 {
   "name": "amygdala",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Amygdala browser library",
   "keywords": [
     "localStorage",
@@ -41,14 +41,25 @@
       "android-browser/latest"
     ]
   },
-  "license": "BSD",
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "http://github.com/lincolnloop/amygdala/blob/master/LICENSE"
+    }
+  ],
   "devDependencies": {
-    "chai": "~1.9.0",
-    "mocha": "~1.17.1"
+    "chai": "^1.9.0",
+    "mocha": "^1.17.1",
+    "lodash": "^2.4.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-wrap": "^0.3.0",
+    "gulp": "^3.5.6",
+    "gulp-browserify": "^0.5.0",
+    "gulp-uglify": "^0.2.1"
   },
   "dependencies": {
-    "underscore": "~1.6.0",
-    "backbone": "~1.1.2",
-    "loglevel": "~0.5.0"
+    "underscore": "^1.6.0",
+    "backbone": "^1.1.2",
+    "loglevel": "^0.6.0"
   }
 }
