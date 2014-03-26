@@ -1,5 +1,5 @@
 /*
- * Itinerary v0.0.4
+ * Amygdala v0.0.5
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
