@@ -136,7 +136,8 @@ Amygdala.prototype.get = function(type, params, options) {
 
   // Request settings
   var settings = {
-    'data': params
+    'data': params,
+    'headers': this._headers
   };
 
   return ajax('GET', options.url, settings)
@@ -159,7 +160,8 @@ Amygdala.prototype.add = function(type, object, options) {
   // Request settings
   var settings = {
     'data': JSON.stringify(object),
-    'contentType': 'application/json'
+    'contentType': 'application/json',
+    'headers': this._headers
   };
 
   return ajax('POST', options.url, settings)
@@ -180,7 +182,8 @@ Amygdala.prototype.update = function(type, object) {
   // Request settings
   var settings = {
     'data': JSON.stringify(object),
-    'contentType': 'application/json'
+    'contentType': 'application/json',
+    'headers': this._headers
   };
 
   return ajax('PUT', object.url, settings)
@@ -201,7 +204,8 @@ Amygdala.prototype.remove = function(type, object) {
   // Request settings
   var settings = {
     'data': JSON.stringify(object),
-    'contentType': 'application/json'
+    'contentType': 'application/json',
+    'headers': this._headers
   };
 
   return ajax('DELETE', object.url, settings)

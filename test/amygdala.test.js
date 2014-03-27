@@ -19,7 +19,7 @@ chai.use(sinonChai);
 
 describe('Amygdala', function() {
 
-  var store, xhr;
+  var store, authStore, xhr;
 
   var schema = {
     // TODO: Mock API
@@ -69,11 +69,16 @@ describe('Amygdala', function() {
   };
 
   before(function() {
-    // Reset the store between each test
     store = new Amygdala(schema);
     store._set('users', userFixtures);
     store._set('teams', teamFixtures);
     store._set('discussions', discussionFixtures);
+
+    var headers = {'Authorization': 'alpha'};
+    authStore = new Amygdala(schema, {'headers': headers});
+    authStore._set('users', userFixtures);
+    authStore._set('teams', teamFixtures);
+    authStore._set('discussions', discussionFixtures);
 
     global.XMLHttpRequest = function() {
       return xhr;
@@ -158,25 +163,36 @@ describe('Amygdala', function() {
       xhr.onload();
     });
 
+    it('doesn\'t add any headers by default', function() {
+      store.get('discussions', {'id': 1});
+
+      expect(xhr.setRequestHeader).to.not.have.been.called;
+    });
+
+    it('will add headers if Amygdala was initialized with some', function() {
+      authStore.get('discussions', {'id': 1});
+
+      expect(xhr.setRequestHeader).to.have.been.calledOnce
+        .and.have.been.calledWith('Authorization', 'alpha');
+    });
+
   });
 
   describe('#add()', function() {
+    var obj = {'name': 'The Alliance'};
 
     it('triggers an Ajax POST request', function() {
-      var obj = {'name': 'The Alliance'};
-
       store.add('teams', obj);
 
-      expect(xhr.open).to.have.been.calledOnce;
-      expect(xhr.open).to.have.been.calledWith('POST', 'http://localhost:8000/api/v2/team/', true);
-      expect(xhr.send).to.have.been.calledOnce;
-      expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
+      expect(xhr.open).to.have.been.calledOnce
+        .and.have.been.calledWith('POST', 'http://localhost:8000/api/v2/team/', true);
+      expect(xhr.send).to.have.been.calledOnce
+        .and.have.been.calledWith(JSON.stringify(obj));
     });
 
     it('calls #_set() with the given type', function(done) {
       sinon.spy(store, '_set');
 
-      var obj = {'name': 'The Alliance'};
       store.add('teams', obj)
         .then(function() {
           expect(store._set).to.have.been.calledWith('teams', 'response');
@@ -196,12 +212,26 @@ describe('Amygdala', function() {
       xhr.onload();
     });
 
+    it('only adds the Content-Type header by deault', function() {
+      store.add('teams', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledOnce
+        .and.have.been.calledWith('Content-Type', 'application/json');
+    });
+
+    it('will add headers if Amygdala was initialized with some', function() {
+      authStore.add('teams', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledTwice
+        .and.have.been.calledWith('Authorization', 'alpha');
+    });
+
   });
 
   describe('#update()', function() {
+    var obj = {'title': 'Rise of the Horde', 'url': '/draenor/'};
 
     it('triggers an Ajax PUT request', function() {
-      var obj = {'title': 'Rise of the Horde', 'url': '/draenor/'};
 
       store.update('messages', obj);
 
@@ -214,7 +244,6 @@ describe('Amygdala', function() {
     it('calls #_set() with the given type', function(done) {
       sinon.spy(store, '_set');
 
-      var obj = {'title': 'Rise of the Horde', 'url': '/draenor/'};
       store.update('messages', obj)
         .then(function() {
           expect(store._set).to.have.been.calledWith('messages', 'response');
@@ -234,13 +263,26 @@ describe('Amygdala', function() {
       xhr.onload();
     });
 
+    it('only adds the Content-Type header by deault', function() {
+      store.update('messages', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledOnce
+        .and.have.been.calledWith('Content-Type', 'application/json');
+    });
+
+    it('will add headers if Amygdala was initialized with some', function() {
+      authStore.update('messages', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledTwice
+        .and.have.been.calledWith('Authorization', 'alpha');
+    });
+
   });
 
   describe('#remove()', function() {
+    var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
 
     it('triggers an Ajax DELETE request', function() {
-      var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
-
       store.remove('messages', obj);
 
       expect(xhr.open).to.have.been.calledOnce;
@@ -252,7 +294,6 @@ describe('Amygdala', function() {
     it('calls #_remove() with the given type', function(done) {
       sinon.spy(store, '_remove');
 
-      var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
       store.remove('messages', obj)
         .then(function() {
           expect(store._remove).to.have.been.calledWith('messages', 'response');
@@ -270,6 +311,20 @@ describe('Amygdala', function() {
       xhr.status = 200;
       xhr.response = 'response';
       xhr.onload();
+    });
+
+    it('only adds the Content-Type header by deault', function() {
+      store.remove('messages', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledOnce
+        .and.have.been.calledWith('Content-Type', 'application/json');
+    });
+
+    it('will add headers if Amygdala was initialized with some', function() {
+      authStore.remove('messages', obj);
+
+      expect(xhr.setRequestHeader).to.have.been.calledTwice
+        .and.have.been.calledWith('Authorization', 'alpha');
     });
 
   });
