@@ -140,7 +140,15 @@ describe('Amygdala', function() {
     });
 
     it('will throw an error including the string if the JSON parse fails', function() {
-      expect(false).to.be.true;
+      // Create an empty store for this test
+      var jsonStore = new Amygdala(schema);
+
+      // Set the users with an invalid string
+      var invalidSet = function() {
+        jsonStore._set('users', 'JSON fiesta!');
+      };
+
+      expect(invalidSet).to.throw('Unexpected token');
     });
 
   });
