@@ -49,17 +49,20 @@ Amygdala.prototype._set = function(type, response) {
   var store = this._store[type] ? this._store[type] : this._store[type] = {};
   var schema = this._schema[type];
 
-  // check if response is an array, or just a simple object
-  if (!Array.isArray(response)) {
-    // isArray === false, try to parse response into an Array
-    // schema.parse translates non-standard data into a list
-    // format than can be stored.
-    response = schema.parse ? schema.parse(response) : [response];
+  if (!_.isArray(response)) {
+    // The response isn't an array. We need to figure out how to handle it.
+    if (schema.parse) {
+      // Prefer the schema's parse method if one exists.
+      response = schema.parse(response);
+    } else if (_.isString(response)) {
+      // If the response is a string, try JSON.parse.
+      response = JSON.parse(response);
+    } else {
+      // Otherwise, just wrap it in an array and hope for the best.
+      response = [response];
+    }
   }
 
-  if (Object.prototype.toString.call(response) === '[object Object]') {
-    response = [response];
-  }
   _.each(response, function(obj) {
     // handle oneToMany relations
     _.each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
@@ -128,7 +131,7 @@ Amygdala.prototype.get = function(type, params, options) {
   // params: extra queryString params (?team=xpto&user=xyz)
   // options: extra options
   // - url: url override
-  log.debug('Amygdala#get', type, params);
+  log.debug('Amygdala#get', type, params, options);
 
   // Default to the URI for 'type'
   options = options || {};
@@ -151,7 +154,7 @@ Amygdala.prototype.add = function(type, object, options) {
   // object: object to update local and remote
   // options: extra options
   // -  url: url override
-  log.debug('Amygdala#add', type, object);
+  log.debug('Amygdala#add', type, object, options);
 
   // Default to the URI for 'type'
   options = options || {};

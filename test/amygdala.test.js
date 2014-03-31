@@ -1,11 +1,11 @@
 /* global describe, it, before, after, beforeEach */
 'use strict';
 
+var _ = require('underscore');
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var Amygdala = require('../amygdala');
-var log = require('loglevel');
 
 // fixtures
 var teamFixtures = require('./fixtures/teams');
@@ -108,24 +108,39 @@ describe('Amygdala', function() {
       expect(Object.keys(store._store['members'])).to.have.length(3);
     });
 
-    it ('replaces objects by id\'s in one-to-many relations', function() {
+    it('replaces objects by id\'s in one-to-many relations', function() {
       expect(
         store._store.teams['/api/v2/team/9/'].members
           .indexOf('/api/v2/team/9/member/f31abb30271cdecae75a6227128c8fd9/')
       ).to.not.equal(-1);
     });
 
-    it ('replaces objects by id\'s in foreign-key relations', function() {
+    it('replaces objects by id\'s in foreign-key relations', function() {
       expect(
         store._store.discussions['/api/v2/discussion/595/'].message
       ).to.equal('/api/v2/message/3798/');
     });
 
-    it ('uses data parsers when they are defined', function() {
+    it('uses data parsers when they are defined', function() {
       // discussions have a non-standard data structure due to pagintation,
       // so the schema provides a `parse` method.
       // for storage purposes we only want the objects, not the meta data.
       expect(Object.keys(store._store['discussions'])).to.have.length(4);
+    });
+
+    it('attempts to parse JSON if the format of the response is a string', function() {
+      // Create an empty store for this test
+      var jsonStore = new Amygdala(schema);
+
+      // Set the users with a JSON string
+      jsonStore._set('users', JSON.stringify(userFixtures));
+
+      expect(Object.keys(jsonStore._store['users'])).to.have.length(3);
+      expect(_.pluck(jsonStore._store['users'], 'name')).to.contain('Brandon Konkle');
+    });
+
+    it('will throw an error including the string if the JSON parse fails', function() {
+      expect(false).to.be.true;
     });
 
   });
@@ -142,14 +157,15 @@ describe('Amygdala', function() {
     });
 
     it('calls #_set() with the given type', function(done) {
-      sinon.spy(store, '_set');
+      var originalSet = store._set;
+      store._set = sinon.spy();
 
       store.get('discussions', {'id': 1})
         .then(function() {
           expect(store._set).to.have.been.calledWith('discussions', 'response');
 
           // Clean up
-          store._set.restore();
+          store._set = originalSet;
           done();
         }).catch(function(error) {
           // Catch and report errors
@@ -191,14 +207,15 @@ describe('Amygdala', function() {
     });
 
     it('calls #_set() with the given type', function(done) {
-      sinon.spy(store, '_set');
+      var originalSet = store._set;
+      store._set = sinon.spy();
 
       store.add('teams', obj)
         .then(function() {
           expect(store._set).to.have.been.calledWith('teams', 'response');
 
           // Clean up
-          store._set.restore();
+          store._set = originalSet;
           done();
         }).catch(function(error) {
           // Catch and report errors
@@ -242,14 +259,15 @@ describe('Amygdala', function() {
     });
 
     it('calls #_set() with the given type', function(done) {
-      sinon.spy(store, '_set');
+      var originalSet = store._set;
+      store._set = sinon.spy();
 
       store.update('messages', obj)
         .then(function() {
           expect(store._set).to.have.been.calledWith('messages', 'response');
 
           // Clean up
-          store._set.restore();
+          store._set = originalSet;
           done();
         }).catch(function(error) {
           // Catch and report errors
@@ -292,14 +310,15 @@ describe('Amygdala', function() {
     });
 
     it('calls #_remove() with the given type', function(done) {
-      sinon.spy(store, '_remove');
+      var originalRemove = store._remove;
+      store._remove = sinon.spy();
 
       store.remove('messages', obj)
         .then(function() {
           expect(store._remove).to.have.been.calledWith('messages', 'response');
 
           // Clean up
-          store._remove.restore();
+          store._remove = originalRemove;
           done();
         }).catch(function(error) {
           // Catch and report errors
