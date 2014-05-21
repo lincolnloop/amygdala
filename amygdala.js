@@ -49,14 +49,20 @@ Amygdala.prototype._set = function(type, response) {
   var store = this._store[type] ? this._store[type] : this._store[type] = {};
   var schema = this._schema[type];
 
+  if (_.isString(response)) {
+    // If the response is a string, try JSON.parse.
+    response = JSON.parse(response);
+  }
+
   if (!_.isArray(response)) {
     // The response isn't an array. We need to figure out how to handle it.
     if (schema.parse) {
       // Prefer the schema's parse method if one exists.
       response = schema.parse(response);
-    } else if (_.isString(response)) {
-      // If the response is a string, try JSON.parse.
-      response = JSON.parse(response);
+      // if it's still not an array, wrap it around one
+      if (!_.isArray(response)) {
+        response = [response];
+      }
     } else {
       // Otherwise, just wrap it in an array and hope for the best.
       response = [response];
@@ -136,6 +142,11 @@ Amygdala.prototype.get = function(type, params, options) {
   // Default to the URI for 'type'
   options = options || {};
   _.defaults(options, {'url': this._getURI(type)});
+  // convert paths to full URLs
+  // TODO: DRY UP
+  if (options.url.indexOf('/') === 0) {
+    options.url = this._schema.apiUrl + options.url;
+  }
 
   // Request settings
   var settings = {
@@ -159,6 +170,11 @@ Amygdala.prototype.add = function(type, object, options) {
   // Default to the URI for 'type'
   options = options || {};
   _.defaults(options, {'url': this._getURI(type)});
+  // convert paths to full URLs
+  // TODO: DRY UP
+  if (options.url.indexOf('/') === 0) {
+    options.url = this._schema.apiUrl + options.url;
+  }
 
   // Request settings
   var settings = {
@@ -182,6 +198,13 @@ Amygdala.prototype.update = function(type, object) {
     throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
   }
 
+  // TODO: clean up
+  var url = object.url;
+  // convert paths to full URLs
+  if (url.indexOf('/') === 0) {
+    url = this._schema.apiUrl + url;
+  }
+
   // Request settings
   var settings = {
     'data': JSON.stringify(object),
@@ -189,7 +212,7 @@ Amygdala.prototype.update = function(type, object) {
     'headers': this._headers
   };
 
-  return ajax('PUT', object.url, settings)
+  return ajax('PUT', url, settings)
     .then(_.partial(this._set, type).bind(this));
 };
 
@@ -204,6 +227,13 @@ Amygdala.prototype.remove = function(type, object) {
     throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');
   }
 
+  // TODO: clean up
+  var url = object.url;
+  // convert paths to full URLs
+  if (url.indexOf('/') === 0) {
+    url = this._schema.apiUrl + url;
+  }
+
   // Request settings
   var settings = {
     'data': JSON.stringify(object),
@@ -211,7 +241,7 @@ Amygdala.prototype.remove = function(type, object) {
     'headers': this._headers
   };
 
-  return ajax('DELETE', object.url, settings)
+  return ajax('DELETE', url, settings)
     .then(_.partial(this._remove, type).bind(this));
 };
 

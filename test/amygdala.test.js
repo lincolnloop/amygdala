@@ -261,7 +261,7 @@ describe('Amygdala', function() {
       store.update('messages', obj);
 
       expect(xhr.open).to.have.been.calledOnce;
-      expect(xhr.open).to.have.been.calledWith('PUT', '/draenor/', true);
+      expect(xhr.open).to.have.been.calledWith('PUT', 'http://localhost:8000/draenor/', true);
       expect(xhr.send).to.have.been.calledOnce;
       expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
     });
@@ -312,7 +312,7 @@ describe('Amygdala', function() {
       store.remove('messages', obj);
 
       expect(xhr.open).to.have.been.calledOnce;
-      expect(xhr.open).to.have.been.calledWith('DELETE', '/orgrimmar/', true);
+      expect(xhr.open).to.have.been.calledWith('DELETE', 'http://localhost:8000/orgrimmar/', true);
       expect(xhr.send).to.have.been.calledOnce;
       expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
     });
