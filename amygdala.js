@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var ajax = require('./lib/ajax');
 var log = require('loglevel');
+var Q = require('q');
 
 var Amygdala = function(schema, options) {
   // Initialize a new Amygdala instance with the given schema and options.
@@ -42,12 +43,13 @@ Amygdala.prototype._set = function(type, response) {
   // Adds or Updates an item of `type` in this._store.
   //
   // type: schema key/store (teams, users)
-  // response: response to store in local cache
+  // ajaxResponse: response to store in local cache
 
   // initialize store for this type (if needed)
   // and store it under `store` for easy access.
   var store = this._store[type] ? this._store[type] : this._store[type] = {};
   var schema = this._schema[type];
+  var deferred = Q.defer();
 
   if (_.isString(response)) {
     // If the response is a string, try JSON.parse.
@@ -113,8 +115,10 @@ Amygdala.prototype._set = function(type, response) {
     // store the object under this._store['type']['id']
     store[obj[this._schema.idAttribute]] = obj;
     // TODO: compare the previous object and trigger change events
-
   }.bind(this));
+
+  // return our data as the original api call's response
+  return response.length === 1 ? response[0] : response;
 };
 
 Amygdala.prototype._remove = function(type, response) {
