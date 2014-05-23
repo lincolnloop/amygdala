@@ -1,6 +1,6 @@
 {
   "name": "amygdala",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Amygdala browser library",
   "keywords": [
     "localStorage",
@@ -9,7 +9,8 @@
     "cache",
     "api",
     "ajax",
-    "offline"
+    "offline",
+    "REST"
   ],
   "homepage": "https://github.com/lincolnloop/amygdala",
   "bugs": {
