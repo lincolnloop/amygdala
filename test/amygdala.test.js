@@ -148,7 +148,7 @@ describe('Amygdala', function() {
         jsonStore._set('users', 'JSON fiesta!');
       };
 
-      expect(invalidSet).to.throw('Unexpected token');
+      expect(invalidSet).to.throw('Invalid JSON from the API response.');
     });
 
   });

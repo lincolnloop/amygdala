@@ -53,7 +53,11 @@ Amygdala.prototype._set = function(type, response) {
 
   if (_.isString(response)) {
     // If the response is a string, try JSON.parse.
-    response = JSON.parse(response);
+    try {
+      response = JSON.parse(response);
+    } catch(e) {
+      throw('Invalid JSON from the API response.');
+    }
   }
 
   if (!_.isArray(response)) {
