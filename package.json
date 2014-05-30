@@ -1,6 +1,6 @@
 {
   "name": "amygdala",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Amygdala browser library",
   "keywords": [
     "localStorage",
@@ -23,7 +23,9 @@
   },
   "main": "amygdala.js",
   "files": [
-    "amygdala.js"
+    "amygdala.js",
+    "lib/ajax.js",
+    "lib/serialize.js"
   ],
   "scripts": {
     "test": "mocha --reporter spec --ui bdd"

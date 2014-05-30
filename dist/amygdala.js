@@ -1,5 +1,5 @@
 /*
- * Amygdala v0.0.8
+ * Amygdala v0.1.1
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
@@ -169,9 +169,32 @@ Amygdala.prototype._remove = function(type, response) {
   // TODO
 };
 
+Amygdala.prototype._validateURI = function(url) {
+  // convert paths to full URLs
+  // TODO: DRY UP
+  if (url.indexOf('/') === 0) {
+    return this._schema.apiUrl + url;
+  }
+
+  return url;
+}
+
 // ------------------------------
 // Public data sync methods
 // ------------------------------
+Amygdala.prototype._get = function(url, params) {
+  // AJAX post request wrapper
+  // TODO: make this method public in the future
+
+  // Request settings
+  var settings = {
+    'data': params,
+    'headers': this._headers
+  };
+
+  return ajax('GET', this._validateURI(url), settings);
+}
+
 Amygdala.prototype.get = function(type, params, options) {
   // GET request for `type` with optional `params`
   //
@@ -184,21 +207,24 @@ Amygdala.prototype.get = function(type, params, options) {
   // Default to the URI for 'type'
   options = options || {};
   _.defaults(options, {'url': this._getURI(type)});
-  // convert paths to full URLs
-  // TODO: DRY UP
-  if (options.url.indexOf('/') === 0) {
-    options.url = this._schema.apiUrl + options.url;
-  }
+
+  return this._get(options.url, params)
+    .then(_.partial(this._set, type).bind(this));
+};
+
+Amygdala.prototype._post = function(url, data) {
+  // AJAX post request wrapper
+  // TODO: make this method public in the future
 
   // Request settings
   var settings = {
-    'data': params,
+    'data': data ? JSON.stringify(data) : null,
+    'contentType': 'application/json',
     'headers': this._headers
   };
 
-  return ajax('GET', options.url, settings)
-    .then(_.partial(this._set, type).bind(this));
-};
+  return ajax('POST', this._validateURI(url), settings);
+}
 
 Amygdala.prototype.add = function(type, object, options) {
   // POST/PUT request for `object` in `type`
@@ -212,22 +238,24 @@ Amygdala.prototype.add = function(type, object, options) {
   // Default to the URI for 'type'
   options = options || {};
   _.defaults(options, {'url': this._getURI(type)});
-  // convert paths to full URLs
-  // TODO: DRY UP
-  if (options.url.indexOf('/') === 0) {
-    options.url = this._schema.apiUrl + options.url;
-  }
+
+  return this._post(options.url, object)
+    .then(_.partial(this._set, type).bind(this));
+};
+
+Amygdala.prototype._put = function(url, data) {
+  // AJAX put request wrapper
+  // TODO: make this method public in the future
 
   // Request settings
   var settings = {
-    'data': JSON.stringify(object),
+    'data': JSON.stringify(data),
     'contentType': 'application/json',
     'headers': this._headers
   };
 
-  return ajax('POST', options.url, settings)
-    .then(_.partial(this._set, type).bind(this));
-};
+  return ajax('PUT', this._validateURI(url), settings);
+}
 
 Amygdala.prototype.update = function(type, object) {
   // POST/PUT request for `object` in `type`
@@ -240,23 +268,21 @@ Amygdala.prototype.update = function(type, object) {
     throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
   }
 
-  // TODO: clean up
-  var url = object.url;
-  // convert paths to full URLs
-  if (url.indexOf('/') === 0) {
-    url = this._schema.apiUrl + url;
-  }
+  return this._put(object.url, object)
+    .then(_.partial(this._set, type).bind(this));
+};
 
-  // Request settings
+Amygdala.prototype._delete = function(url, data) {
+  // AJAX delete request wrapper
+  // TODO: make this method public in the future
   var settings = {
-    'data': JSON.stringify(object),
+    'data': JSON.stringify(data),
     'contentType': 'application/json',
     'headers': this._headers
   };
 
-  return ajax('PUT', url, settings)
-    .then(_.partial(this._set, type).bind(this));
-};
+  return ajax('DELETE', this._validateURI(url), settings);
+}
 
 Amygdala.prototype.remove = function(type, object) {
   // DELETE request for `object` in `type`
@@ -269,21 +295,7 @@ Amygdala.prototype.remove = function(type, object) {
     throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');
   }
 
-  // TODO: clean up
-  var url = object.url;
-  // convert paths to full URLs
-  if (url.indexOf('/') === 0) {
-    url = this._schema.apiUrl + url;
-  }
-
-  // Request settings
-  var settings = {
-    'data': JSON.stringify(object),
-    'contentType': 'application/json',
-    'headers': this._headers
-  };
-
-  return ajax('DELETE', url, settings)
+  return this._delete(object.url, object)
     .then(_.partial(this._remove, type).bind(this));
 };
 
