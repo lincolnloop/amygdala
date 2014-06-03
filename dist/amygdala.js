@@ -1,5 +1,5 @@
 /*
- * Amygdala v0.1.1
+ * Amygdala v0.1.3
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
@@ -377,8 +377,8 @@ function ajax(method, url, options) {
   request.open(method, url, true);
 
   request.onload = function() {
-    // status 200 OK, 201 CREATED
-    if (request.status === 200 || request.status === 201 || request.status === 204) {
+    // status 200 OK, 201 CREATED, 20* ALL OK
+    if (request.status.toString().substr(0, 2) === '20') {
       deferred.resolve(request.response);
     } else {
       deferred.reject(new Error('Request failed with status code ' + request.status));
