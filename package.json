@@ -1,7 +1,7 @@
 {
   "name": "amygdala",
-  "version": "0.1.1",
-  "description": "Amygdala browser library",
+  "version": "0.1.2",
+  "description": "Amygdala REST browser library",
   "keywords": [
     "localStorage",
     "store",
