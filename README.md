@@ -1,9 +1,10 @@
 Amygdala
 ========
 
-Amygdala is a library for API driven web applications that makes it simple to
-query your API server and also handles session caching on the browser (and
-eventually offline through localStorage).
+Amygdala is a RESTful HTTP client for JavaScript powered web applications. Simply configure it once
+with your API schema, and easily do get, create and update requests.
+Amygdala also handles session-based caching on the browser for fast access to your data, and
+aims to have offline through indexedDB and localStorage.
 
 [![browser support](https://ci.testling.com/lincolnloop/amygdala.png)
 ](https://ci.testling.com/lincolnloop/amygdala)
