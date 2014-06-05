@@ -1,7 +1,7 @@
 {
   "name": "amygdala",
   "version": "0.1.4",
-  "description": "A RESTful HTTP client for JavaScript powered web applications",
+  "description": "RESTful HTTP client for JavaScript powered web applications",
   "keywords": [
     "REST",
     "API",
