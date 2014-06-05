@@ -2,7 +2,7 @@ Amygdala
 ========
 
 Amygdala is a RESTful HTTP client for JavaScript powered web applications. Simply configure it once
-with your API schema, and easily do get, create and update requests.
+with your API schema, and easily do GET, POST, PUT and DELETE requests with minimal effort and a consistent API.
 Amygdala also handles session-based caching on the browser for fast access to your data, and
 aims to have offline through indexedDB and localStorage.
 
