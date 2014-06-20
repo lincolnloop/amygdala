@@ -1,5 +1,5 @@
 /*
- * Amygdala v0.1.3
+ * Amygdala v0.1.5
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
@@ -159,14 +159,15 @@ Amygdala.prototype._set = function(type, response) {
   return response.length === 1 ? response[0] : response;
 };
 
-Amygdala.prototype._remove = function(type, response) {
+Amygdala.prototype._remove = function(type, object) {
   // Removes an item of `type` from this._store.
   //
   // type: schema key/store (teams, users)
   // response: response to store in local cache
-  log.debug('Amygdala#_remove', type, response);
+  log.debug('Amygdala#_remove', type, object);
 
-  // TODO
+  // delete object of type by id
+  delete this._store[type][object[this._schema.idAttribute]]
 };
 
 Amygdala.prototype._validateURI = function(url) {
@@ -296,7 +297,7 @@ Amygdala.prototype.remove = function(type, object) {
   }
 
   return this._delete(object.url, object)
-    .then(_.partial(this._remove, type).bind(this));
+    .then(_.partial(this._remove, type, object).bind(this));
 };
 
 // ------------------------------
@@ -470,6 +471,16 @@ process.title = 'browser';
 process.browser = true;
 process.env = {};
 process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -2388,8 +2399,8 @@ return Q;
 
 });
 
-}).call(this,require("/Users/mlouro/webapps/opensource/amygdala/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/mlouro/webapps/opensource/amygdala/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":6}]},{},[3])
+}).call(this,require("IrXUsu"))
+},{"IrXUsu":6}]},{},[3])
 /*
  * -------- End module --------
  */
