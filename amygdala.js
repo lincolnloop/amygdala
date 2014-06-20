@@ -125,14 +125,15 @@ Amygdala.prototype._set = function(type, response) {
   return response.length === 1 ? response[0] : response;
 };
 
-Amygdala.prototype._remove = function(type, response) {
+Amygdala.prototype._remove = function(type, object) {
   // Removes an item of `type` from this._store.
   //
   // type: schema key/store (teams, users)
   // response: response to store in local cache
-  log.debug('Amygdala#_remove', type, response);
+  log.debug('Amygdala#_remove', type, object);
 
-  // TODO
+  // delete object of type by id
+  delete this._store[type][object[this._schema.idAttribute]]
 };
 
 Amygdala.prototype._validateURI = function(url) {
@@ -262,7 +263,7 @@ Amygdala.prototype.remove = function(type, object) {
   }
 
   return this._delete(object.url, object)
-    .then(_.partial(this._remove, type).bind(this));
+    .then(_.partial(this._remove, type, object).bind(this));
 };
 
 // ------------------------------

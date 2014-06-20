@@ -306,13 +306,13 @@ describe('Amygdala', function() {
   });
 
   describe('#remove()', function() {
-    var obj = {'title': 'Garrosh', 'url': '/orgrimmar/'};
+    var obj = discussionFixtures.results[0];
 
     it('triggers an Ajax DELETE request', function() {
-      store.remove('messages', obj);
+      store.remove('discussions', obj);
 
       expect(xhr.open).to.have.been.calledOnce;
-      expect(xhr.open).to.have.been.calledWith('DELETE', 'http://localhost:8000/orgrimmar/', true);
+      expect(xhr.open).to.have.been.calledWith('DELETE', 'http://localhost:8000/api/v2/discussion/595/', true);
       expect(xhr.send).to.have.been.calledOnce;
       expect(xhr.send).to.have.been.calledWith(JSON.stringify(obj));
     });
@@ -321,10 +321,9 @@ describe('Amygdala', function() {
       var originalRemove = store._remove;
       store._remove = sinon.spy();
 
-      store.remove('messages', obj)
+      store.remove('discussions', obj)
         .then(function() {
-          expect(store._remove).to.have.been.calledWith('messages', 'response');
-
+          expect(store._remove).to.have.been.calledWith('discussions', obj);
           // Clean up
           store._remove = originalRemove;
           done();
@@ -340,15 +339,35 @@ describe('Amygdala', function() {
       xhr.onload();
     });
 
+    it('removes the object from the cached store', function(done) {
+
+      store.remove('discussions', obj)
+        .then(function() {
+          expect(store.find('discussions', obj.url)).to.equal(undefined);
+          // add the discussion back into the store
+          store._set('discussions', discussionFixtures);
+          done();
+        }).catch(function(error) {
+          // Catch and report errors
+          done(error);
+        });
+
+      // Set the status, then trigger the resolution of the promise so the
+      // 'then' block above is executed.
+      xhr.status = 200;
+      xhr.response = 'response';
+      xhr.onload();
+    });
+
     it('only adds the Content-Type header by deault', function() {
-      store.remove('messages', obj);
+      store.remove('discussions', obj);
 
       expect(xhr.setRequestHeader).to.have.been.calledOnce
         .and.have.been.calledWith('Content-Type', 'application/json');
     });
 
     it('will add headers if Amygdala was initialized with some', function() {
-      authStore.remove('messages', obj);
+      authStore.remove('discussions', obj);
 
       expect(xhr.setRequestHeader).to.have.been.calledTwice
         .and.have.been.calledWith('Authorization', 'alpha');
