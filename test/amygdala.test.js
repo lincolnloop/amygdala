@@ -403,4 +403,44 @@ describe('Amygdala', function() {
 
   });
 
+  describe('^events', function() {
+
+    it('triggers a change:<type> event when an object of <type> is added', function() {
+      var callback = sinon.spy();
+      // register the event
+      store.on('change:teams', callback);
+      // trigger the event on add
+      store._set('teams', {'name': 'The <type> Event Team'});
+      
+      expect(callback).to.have.been.calledOnce;
+    });
+
+    it('triggers a change event when an object is changed', function() {
+      var callback = sinon.spy();
+      // register the event
+      store.on('change', callback);
+      // trigger the event on add
+      store._set('teams', {
+        'url': '/api/v2/team/9/',
+        'name': 'The Event Team'
+      });
+      
+      expect(callback).to.have.been.calledOnce;
+    });
+
+    it('triggers a change event when an object is deleted', function() {
+      var callback = sinon.spy();
+      // register the event
+      store.on('change', callback);
+      // trigger the event on add
+      store._remove('teams', {
+        'url': '/api/v2/team/9/',
+        'name': 'The Event Team'
+      });
+      
+      expect(callback).to.have.been.calledOnce;
+    });
+
+  });
+
 });

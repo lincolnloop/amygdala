@@ -74,3 +74,25 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
   store.remove('users', {'url': '/api/v2/user/32/'});
 
 ```
+
+## Listening to change events
+
+Amygdala uses [https://www.npmjs.org/package/event-emitter](Event Emitter) under the hood
+to trigger some very basic events. Right now it only triggers two different events:
+
+* change
+* change:<type>
+
+To listen to these events, just use Event Emitter's API:
+
+```javascript
+
+  // Listen to any change in the store
+  store.on('change', function() { ... });
+
+  // Listen to any change of a specific type
+  store.on('change:users', function() { ... });
+
+```
+The full API can be found on the [https://www.npmjs.org/package/event-emitter](Event Emitter) page.
+

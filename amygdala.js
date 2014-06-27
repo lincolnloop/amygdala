@@ -4,6 +4,7 @@ var _ = require('underscore');
 var ajax = require('./lib/ajax');
 var log = require('loglevel');
 var Q = require('q');
+var EventEmitter = require('event-emitter');
 
 var Amygdala = function(schema, options) {
   // Initialize a new Amygdala instance with the given schema and options.
@@ -24,6 +25,8 @@ var Amygdala = function(schema, options) {
   // memory data storage
   this._store = {};
 };
+
+Amygdala.prototype = EventEmitter({});
 
 // ------------------------------
 // Internal utils methods
@@ -118,6 +121,10 @@ Amygdala.prototype._set = function(type, response) {
 
     // store the object under this._store['type']['id']
     store[obj[this._schema.idAttribute]] = obj;
+    // emit changes events
+    this.emit('change');
+    // change:<type>
+    this.emit('change:' + type);
     // TODO: compare the previous object and trigger change events
   }.bind(this));
 
@@ -131,6 +138,11 @@ Amygdala.prototype._remove = function(type, object) {
   // type: schema key/store (teams, users)
   // response: response to store in local cache
   log.debug('Amygdala#_remove', type, object);
+
+  // emit changes events
+  this.emit('change');
+  // change:<type>
+  this.emit('change:' + type);
 
   // delete object of type by id
   delete this._store[type][object[this._schema.idAttribute]]
