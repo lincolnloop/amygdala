@@ -279,6 +279,29 @@ Amygdala.prototype.remove = function(type, object) {
 };
 
 // ------------------------------
+// Public cache methods
+// ------------------------------
+Amygdala.prototype.setCache = function(type, values) {
+  if (!type) {
+    throw new Error('Missing schema type parameter.');
+  }
+  if (!this._schema[type] || !this._schema[type].url) {
+    throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
+  }
+  return window.localStorage.setItem('amy-' + type, JSON.stringify(objects));
+};
+
+Amygdala.prototype.getCache = function(type) {
+  if (!type) {
+    throw new Error('Missing schema type parameter.');
+  }
+  if (!this._schema[type] || !this._schema[type].url) {
+    throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
+  }
+  return window.localStorage.getItem('amy-' + type);
+};
+
+// ------------------------------
 // Public query methods
 // ------------------------------
 Amygdala.prototype.findAll = function(type, query) {
