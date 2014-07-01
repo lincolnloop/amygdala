@@ -24,6 +24,7 @@ var Amygdala = function(schema, options) {
 
   // memory data storage
   this._store = {};
+  this._changeEvents = {};
 };
 
 Amygdala.prototype = EventEmitter({});
@@ -38,6 +39,24 @@ Amygdala.prototype._getURI = function(type) {
   }
   return this._schema.apiUrl + this._schema[type].url;
 },
+
+Amygdala.prototype._emitChange = function(type) {
+
+  // TODO: Add tests for debounced events
+  //console.log(this._changeEvents);
+  if (!this._changeEvents[type]) {
+    this._changeEvents[type] = _.debounce(_.partial(function(type) {
+      console.log('change emit', type);
+      // emit changes events
+      this.emit('change', type);
+      // change:<type>
+      this.emit('change:' + type);
+      // TODO: compare the previous object and trigger change events
+    }.bind(this), type), 150);
+  }
+  
+  this._changeEvents[type]();
+}
 
 // ------------------------------
 // Internal data sync methods
@@ -121,11 +140,10 @@ Amygdala.prototype._set = function(type, response) {
 
     // store the object under this._store['type']['id']
     store[obj[this._schema.idAttribute]] = obj;
-    // emit changes events
-    this.emit('change');
-    // change:<type>
-    this.emit('change:' + type);
-    // TODO: compare the previous object and trigger change events
+
+    // emit change events
+    this._emitChange(type);
+
   }.bind(this));
 
   // return our data as the original api call's response
@@ -139,10 +157,7 @@ Amygdala.prototype._remove = function(type, object) {
   // response: response to store in local cache
   log.debug('Amygdala#_remove', type, object);
 
-  // emit changes events
-  this.emit('change');
-  // change:<type>
-  this.emit('change:' + type);
+  this._emitChange(type);
 
   // delete object of type by id
   delete this._store[type][object[this._schema.idAttribute]]
@@ -298,7 +313,7 @@ Amygdala.prototype.getCache = function(type) {
   if (!this._schema[type] || !this._schema[type].url) {
     throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
   }
-  return window.localStorage.getItem('amy-' + type);
+  return JSON.parse(window.localStorage.getItem('amy-' + type));
 };
 
 // ------------------------------

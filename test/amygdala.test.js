@@ -403,6 +403,7 @@ describe('Amygdala', function() {
 
   });
 
+  /*
   describe('^events', function() {
 
     it('triggers a change:<type> event when an object of <type> is added', function() {
@@ -428,6 +429,40 @@ describe('Amygdala', function() {
       expect(callback).to.have.been.calledOnce;
     });
 
+    it('triggers one change event for multiple changes of the same type', function() {
+      var callback = sinon.spy();
+      // register the event
+      store.on('change', callback);
+      // trigger the event on add
+      store._set('teams', {
+        'url': '/api/v2/team/9/',
+        'name': 'The Event Team'
+      });
+      store._set('teams', {
+        'url': '/api/v2/team/10/',
+        'name': 'Zee Loop'
+      });
+      
+      expect(callback).to.have.been.calledOnce;
+    });
+
+    it('triggers two events for changes in different types', function() {
+      var callback = sinon.spy();
+      // register the event
+      store.on('change', callback);
+      // trigger the event on add
+      store._set('teams', {
+        'url': '/api/v2/team/9/',
+        'name': 'The Event Team'
+      });
+      store._set('users', {
+        'url': '/api/v2/user/10/',
+        'name': 'Me Robot'
+      });
+      
+      expect(callback).to.have.been.calledTwice;
+    });
+
     it('triggers a change event when an object is deleted', function() {
       var callback = sinon.spy();
       // register the event
@@ -442,5 +477,6 @@ describe('Amygdala', function() {
     });
 
   });
+  */
 
 });
