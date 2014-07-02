@@ -27,10 +27,12 @@ var Amygdala = function(schema, options) {
   this._changeEvents = {};
 
   if (options.localStorage) {
-    _.each(this._schema, function(type) {
-      var storageCache = window.localStorage.getItem('amy-' + type);
+    _.each(this._schema, function(value, key) {
+      // check each schema entry for localStorage data
+      // TODO: filter out apiUrl and idAttribute 
+      var storageCache = window.localStorage.getItem('amy-' + key);
       if (storageCache) {
-        this._set(type, JSON.parse(storageCache), {'silent': true} );
+        this._set(key, JSON.parse(storageCache), {'silent': true} );
       }
     }.bind(this));
 
