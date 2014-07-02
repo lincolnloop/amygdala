@@ -1,5 +1,5 @@
 /*
- * Amygdala v0.2.0
+ * Amygdala v0.2.1
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
@@ -31,7 +31,9 @@
 /*
  * -------- Begin module --------
  */
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"9LYMek":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"amygdala":[function(require,module,exports){
+module.exports=require('9LYMek');
+},{}],"9LYMek":[function(require,module,exports){
 'use strict';
 
 var _ = require('underscore');
@@ -61,10 +63,12 @@ var Amygdala = function(schema, options) {
   this._changeEvents = {};
 
   if (options.localStorage) {
-    _.each(this._schema, function(type) {
-      var storageCache = window.localStorage.getItem('amy-' + type);
+    _.each(this._schema, function(value, key) {
+      // check each schema entry for localStorage data
+      // TODO: filter out apiUrl and idAttribute 
+      var storageCache = window.localStorage.getItem('amy-' + key);
       if (storageCache) {
-        this._set(type, JSON.parse(storageCache), {'silent': true} );
+        this._set(key, JSON.parse(storageCache), {'silent': true} );
       }
     }.bind(this));
 
@@ -407,9 +411,7 @@ Amygdala.prototype.find = function(type, query) {
 
 module.exports = Amygdala;
 
-},{"./lib/ajax":4,"event-emitter":6,"loglevel":"3ohSP0","q":22,"underscore":"ZKusGn"}],"amygdala":[function(require,module,exports){
-module.exports=require('9LYMek');
-},{}],3:[function(require,module,exports){
+},{"./lib/ajax":4,"event-emitter":6,"loglevel":"3ohSP0","q":22,"underscore":"ZKusGn"}],3:[function(require,module,exports){
 module.exports=require("9LYMek")
 },{"./lib/ajax":4,"event-emitter":6,"loglevel":"3ohSP0","q":22,"underscore":"ZKusGn"}],4:[function(require,module,exports){
 'use strict';
