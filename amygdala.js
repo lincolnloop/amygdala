@@ -25,6 +25,21 @@ var Amygdala = function(schema, options) {
   // memory data storage
   this._store = {};
   this._changeEvents = {};
+
+  if (options.localStorage) {
+    _.each(this._schema, function(type) {
+      var storageCache = window.localStorage.getItem('amy-' + type);
+      if (storageCache) {
+        this._set(type, JSON.parse(storageCache), {'silent': true} );
+      }
+    }.bind(this));
+
+    // store every change on local storage
+    // when localStorage is set to true
+    this.on('change', function(type) {
+      this.setCache(type, this.findAll(type));
+    }.bind(this));
+  }
 };
 
 Amygdala.prototype = EventEmitter({});
@@ -61,7 +76,7 @@ Amygdala.prototype._emitChange = function(type) {
 // ------------------------------
 // Internal data sync methods
 // ------------------------------
-Amygdala.prototype._set = function(type, response) {
+Amygdala.prototype._set = function(type, response, options) {
   // Adds or Updates an item of `type` in this._store.
   //
   // type: schema key/store (teams, users)
@@ -142,7 +157,9 @@ Amygdala.prototype._set = function(type, response) {
     store[obj[this._schema.idAttribute]] = obj;
 
     // emit change events
-    this._emitChange(type);
+    if (!options || options.silent !== true) {
+      this._emitChange(type);
+    }
 
   }.bind(this));
 
@@ -296,11 +313,11 @@ Amygdala.prototype.remove = function(type, object) {
 // ------------------------------
 // Public cache methods
 // ------------------------------
-Amygdala.prototype.setCache = function(type, values) {
+Amygdala.prototype.setCache = function(type, objects) {
   if (!type) {
     throw new Error('Missing schema type parameter.');
   }
-  if (!this._schema[type] || !this._schema[type].url) {
+  if (!this._schema[type]) {
     throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
   }
   return window.localStorage.setItem('amy-' + type, JSON.stringify(objects));
