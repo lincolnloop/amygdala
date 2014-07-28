@@ -82,7 +82,7 @@ Amygdala uses [https://www.npmjs.org/package/event-emitter](Event Emitter) under
 to trigger some very basic events. Right now it only triggers two different events:
 
 * change
-* change:<type>
+* change:type
 
 To listen to these events, just use Event Emitter's API:
 
