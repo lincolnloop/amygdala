@@ -36,6 +36,7 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
     },
     'teams': {
       'url': '/api/v2/team/',
+      'orderBy': 'name',
       'oneToMany': {
         'members': 'members'
       }

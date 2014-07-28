@@ -48,6 +48,7 @@ describe('Amygdala', function() {
     },
     'discussions': {
       'url': '/api/v2/discussion/',
+      'orderBy': 'title',
       'foreignKey': {
         'message': 'messages',
         'team': 'teams'
@@ -397,6 +398,20 @@ describe('Amygdala', function() {
     });
 
     it('can find an object with filters', function() {
+      expect(store.find('discussions', {'intro': 'unicode'}).title)
+        .to.equal('unicode');
+    });
+
+  });
+
+  describe('#orderBy', function() {
+
+    it('can sort', function() {
+      expect(store.findAll('discussions')[0].title)
+        .to.equal('bleep bloop');
+    });
+
+    it('can reverse sort', function() {
       expect(store.find('discussions', {'intro': 'unicode'}).title)
         .to.equal('unicode');
     });

@@ -341,18 +341,40 @@ Amygdala.prototype.getCache = function(type) {
 Amygdala.prototype.findAll = function(type, query) {
   // find a list of items within the store. (THAT ARE NOT STORED IN BACKBONE COLLECTIONS)
   var store = this._store[type];
+  var orderBy;
+  var reverseMatch;
+  var results;
   if (!store || !Object.keys(store).length) {
     return [];
   }
   if (query === undefined) {
     // query is empty, no object is returned
-    return _.map(store, function(item) { return item; });
+    results = _.map(store, function(item) { return item; });
   } else if (Object.prototype.toString.call(query) === '[object Object]') {
     // if query is an object, assume it specifies filters.
-    return _.filter(store, function(item) { return _.findWhere([item], query); });
+    results = _.filter(store, function(item) { return _.findWhere([item], query); });
   } else {
     throw new Error('Invalid query for findAll.');
   }
+  orderBy = this._schema[type].orderBy;
+  if (orderBy) {
+    // match the orderBy attribute for the presence
+    // of a reverse flag
+    reverseMatch = orderBy.match(/^-([\w-]{0,})$/);
+    if (reverseMatch !== null) {
+      // if we have two matches, we have a reverse flag
+      orderBy = orderBy.replace('-', '');
+    }
+    results = _.sortBy(results, function(item) {
+      return item[orderBy].toString().toLowerCase();
+    }.bind(this));
+
+    if (reverseMatch !== null) {
+      // reverse the results
+      results = results.reverse();
+    }
+  }
+  return results;
 };
 
 Amygdala.prototype.find = function(type, query) {
