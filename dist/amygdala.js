@@ -1,5 +1,5 @@
 /*
- * Amygdala v0.2.2
+ * Amygdala v0.3.0
  * (c) 2014 Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)
  * https://github.com/lincolnloop/amygdala
  * Licensed under the BSD license.
@@ -42,27 +42,24 @@ var log = require('loglevel');
 var Q = require('q');
 var EventEmitter = require('event-emitter');
 
-var Amygdala = function(schema, options) {
+var Amygdala = function(options) {
   // Initialize a new Amygdala instance with the given schema and options.
   //
   // params:
-  // - schema (Object): Details about the data structure.
   // - options (Object)
-  //
-  // options:
-  // - options.headers (Object): Additional headers to provide with each
-  //                             request, such as auth headers.
-  log.debug('Amygdala#constructor', schema, options);
-  options = options || {};
+  //   - config (apiUrl, headers)
+  //   - schema
+  log.debug('Amygdala#constructor', options);
 
-  this._schema = schema;
-  this._headers = options.headers;
+  this._config = options.config;
+  this._schema = options.schema;
+  this._headers = this._config.headers;
 
   // memory data storage
   this._store = {};
   this._changeEvents = {};
 
-  if (options.localStorage) {
+  if (this._config.localStorage) {
     _.each(this._schema, function(value, key) {
       // check each schema entry for localStorage data
       // TODO: filter out apiUrl and idAttribute 
@@ -90,7 +87,7 @@ Amygdala.prototype._getURI = function(type) {
   if (!this._schema[type] || !this._schema[type].url) {
     throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
   }
-  return this._schema.apiUrl + this._schema[type].url;
+  return this._config.apiUrl + this._schema[type].url;
 },
 
 Amygdala.prototype._emitChange = function(type) {
@@ -167,7 +164,7 @@ Amygdala.prototype._set = function(type, response, options) {
           // and replace the list of objects within `obj`
           // by a list of `id's
           obj[relatedAttr] = _.map(related, function(item) {
-            return item[this._schema.idAttribute];
+            return item[this._config.idAttribute];
           }.bind(this));
         }
       }
@@ -186,13 +183,13 @@ Amygdala.prototype._set = function(type, response, options) {
           this._set(relatedType, [related]);
           // and replace the list of objects within `item`
           // by a list of `id's
-          obj[relatedAttr] = related[this._schema.idAttribute];
+          obj[relatedAttr] = related[this._config.idAttribute];
         }
       }
     }.bind(this));
 
     // store the object under this._store['type']['id']
-    store[obj[this._schema.idAttribute]] = obj;
+    store[obj[this._config.idAttribute]] = obj;
 
     // emit change events
     if (!options || options.silent !== true) {
@@ -215,14 +212,14 @@ Amygdala.prototype._remove = function(type, object) {
   this._emitChange(type);
 
   // delete object of type by id
-  delete this._store[type][object[this._schema.idAttribute]]
+  delete this._store[type][object[this._config.idAttribute]]
 };
 
 Amygdala.prototype._validateURI = function(url) {
   // convert paths to full URLs
   // TODO: DRY UP
   if (url.indexOf('/') === 0) {
-    return this._schema.apiUrl + url;
+    return this._config.apiUrl + url;
   }
 
   return url;

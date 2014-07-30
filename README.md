@@ -29,23 +29,31 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
 
 ```javascript
   var store = new Amygdala({
-    'apiUrl': 'http://localhost:8000',
-    'idAttribute': 'url',
-    'users': {
-      'url': '/api/v2/user/'
+    'config': {
+      'apiUrl': 'http://localhost:8000',
+      'idAttribute': 'url',
+      'headers': {
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      'localStorage': true
     },
-    'teams': {
-      'url': '/api/v2/team/',
-      'orderBy': 'name',
-      'oneToMany': {
-        'members': 'members'
+    'schema': {
+      'users': {
+        'url': '/api/v2/user/'
+      },
+      'teams': {
+        'url': '/api/v2/team/',
+        'orderBy': 'name',
+        'oneToMany': {
+          'members': 'members'
+        }
+      },
+      'members': {
+        'foreignKey': {
+          'user': 'users'
+        }
       }
-    },
-    'members': {
-      'foreignKey': {
-        'user': 'users'
-      }
-    },
+    }
   });
 
 ```
@@ -76,7 +84,16 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
 
 ```
 
-## Listening to change events
+## Configuration
+
+Here are the few configuration settings you can set:
+
+* apiUrl // your base API url (protocol, domain name, port).
+* idAttribute // if you want to use a custom "primary key"
+* headers // holds a key/value list of headers to be sent on every request
+* localStorage // If set to `true`, all your data will be persist across sessions (read-only).
+
+## Events
 
 Amygdala uses [https://www.npmjs.org/package/event-emitter](Event Emitter) under the hood
 to trigger some very basic events. Right now it only triggers two different events:
@@ -84,7 +101,7 @@ to trigger some very basic events. Right now it only triggers two different even
 * change
 * change:type
 
-To listen to these events, just use Event Emitter's API:
+To listen to these events, you can use any of [https://www.npmjs.org/package/event-emitter](Event Emitter)'s binding methods, the most common being `on`:
 
 ```javascript
 
@@ -95,5 +112,3 @@ To listen to these events, just use Event Emitter's API:
   store.on('change:users', function() { ... });
 
 ```
-The full API can be found on the [https://www.npmjs.org/package/event-emitter](Event Emitter) page.
-

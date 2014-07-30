@@ -20,63 +20,73 @@ chai.use(sinonChai);
 describe('Amygdala', function() {
 
   var store, authStore, xhr;
-
-  var schema = {
-    // TODO: Mock API
-    'apiUrl': 'http://localhost:8000',
-    'idAttribute': 'url',
-    'teams': {
-      'url': '/api/v2/team/',
-      'oneToMany': {
-        'members': 'members'
-      }
+  var settings = {
+    'config': {
+      'apiUrl': 'http://localhost:8000',
+      'idAttribute': 'url'
     },
-    'users': {
-      'url': '/api/v2/user/'
-    },
-    'members': {
-      'foreignKey': {
-        'user': 'users'
-      }
-    },
-    'attachments': {
-      'url': '/api/v2/attachment/',
-      'foreignKey': {
-        'user': 'users',
-        'message': 'messages'
-      }
-    },
-    'discussions': {
-      'url': '/api/v2/discussion/',
-      'orderBy': 'title',
-      'foreignKey': {
-        'message': 'messages',
-        'team': 'teams'
+    'schema': {
+      'teams': {
+        'url': '/api/v2/team/',
+        'oneToMany': {
+          'members': 'members'
+        }
       },
-      parse: function(data) {
-        return data.results;
+      'users': {
+        'url': '/api/v2/user/'
       },
-    },
-    'messages': {
-      'url': '/api/v2/message/',
-      'oneToMany': {
-        'attachments': 'attachments'
+      'members': {
+        'foreignKey': {
+          'user': 'users'
+        }
       },
-      'foreignKey': {
-        'user': 'users',
-        'discussion': 'discussions'
+      'attachments': {
+        'url': '/api/v2/attachment/',
+        'foreignKey': {
+          'user': 'users',
+          'message': 'messages'
+        }
+      },
+      'discussions': {
+        'url': '/api/v2/discussion/',
+        'orderBy': 'title',
+        'foreignKey': {
+          'message': 'messages',
+          'team': 'teams'
+        },
+        parse: function(data) {
+          return data.results;
+        },
+      },
+      'messages': {
+        'url': '/api/v2/message/',
+        'oneToMany': {
+          'attachments': 'attachments'
+        },
+        'foreignKey': {
+          'user': 'users',
+          'discussion': 'discussions'
+        }
       }
     }
   };
 
   before(function() {
-    store = new Amygdala(schema);
+    store = new Amygdala(settings);
     store._set('users', userFixtures);
     store._set('teams', teamFixtures);
     store._set('discussions', discussionFixtures);
 
-    var headers = {'Authorization': 'alpha'};
-    authStore = new Amygdala(schema, {'headers': headers});
+    var authSettings = {
+      'config': {
+        'apiUrl': 'http://localhost:8000',
+        'idAttribute': 'url',
+        'headers': {'Authorization': 'alpha'}
+      },
+      'schema': settings.schema
+    };
+
+    authStore = new Amygdala(authSettings);
     authStore._set('users', userFixtures);
     authStore._set('teams', teamFixtures);
     authStore._set('discussions', discussionFixtures);
@@ -131,7 +141,7 @@ describe('Amygdala', function() {
 
     it('attempts to parse JSON if the format of the response is a string', function() {
       // Create an empty store for this test
-      var jsonStore = new Amygdala(schema);
+      var jsonStore = new Amygdala(settings);
 
       // Set the users with a JSON string
       jsonStore._set('users', JSON.stringify(userFixtures));
@@ -142,7 +152,7 @@ describe('Amygdala', function() {
 
     it('will throw an error including the string if the JSON parse fails', function() {
       // Create an empty store for this test
-      var jsonStore = new Amygdala(schema);
+      var jsonStore = new Amygdala(settings);
 
       // Set the users with an invalid string
       var invalidSet = function() {
