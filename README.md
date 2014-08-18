@@ -48,7 +48,6 @@ To create a new store, define the few possible settings listed below and your AP
       }
     }
   });
-
 ```
 
 #### Configuration options:
@@ -72,7 +71,6 @@ When you want to include related data under a single request, for example, to mi
 Consider the following schema, that defines discussions that have messages, and messages that have votes:
 
 ```javascript
-
 var store = new Amygdala({
     'config': {
       'apiUrl': 'http://localhost:8000',
@@ -100,15 +98,12 @@ var store = new Amygdala({
     }
   }
 );
-
 ```
 
 In this scenario, doing a query on a discussion will retrieve all messages and votes for that discussion:
 
 ```javascript
-
-  store.get('discussions', {'url': '/api/v2/discussion/85273/'}).then(function(){ ... });
-
+store.get('discussions', {'url': '/api/v2/discussion/85273/'}).then(function(){ ... });
 ```
 
 Since we defined relations on our schema, the message and vote data won't be stored on the discussion "table", but on it's own "table" instead.
@@ -116,9 +111,9 @@ Since we defined relations on our schema, the message and vote data won't be sto
 ##### OneToMany:
 
 ```javascript
-  'oneToMany': {
-    'children': 'messages'
-  }
+'oneToMany': {
+  'children': 'messages'
+}
 ```
 
 `OneToMany` relations are the most common, and should be used when you have related data in form of an array. In this case, `children` is the attribute name on the response, and `messages` is the destination "table" for the array data.
@@ -127,9 +122,9 @@ Since we defined relations on our schema, the message and vote data won't be sto
 ##### foreignKey:
 
 ```javascript
-  'foreignKey': {
-    'discussion': 'discussions'
-  }
+'foreignKey': {
+  'discussion': 'discussions'
+}
 ```
 
 `foreignKey` relations are basically for one to one relations. In this case Amygdala will look for an object as value of `discussion` and move it over to the `discussions` "table" if one is found.
@@ -140,31 +135,27 @@ Since we defined relations on our schema, the message and vote data won't be sto
 The methods below, allow you to make remote calls to your API server.
 
 ```javascript
+// GET
+var users = store.get('users').done(function() { ... });
 
-  // GET
-  var users = store.get('users').done(function() { ... });
-  
-  // POST
-  store.add('teams', {name: Lincoln Loop, 'active': true}).done(function() { ... });
-  
-  // PUT
-  store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true}).done(function() { ... });
+// POST
+store.add('teams', {name: Lincoln Loop, 'active': true}).done(function() { ... });
 
-  // DELETE
-  store.remove('users', {'url': '/api/v2/user/32/'}).done(function() { ... });
+// PUT
+store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true}).done(function() { ... });
 
+// DELETE
+store.remove('users', {'url': '/api/v2/user/32/'}).done(function() { ... });
 ```
 
 On top of this, Amygdala also stores a copy of your data locally, which you can access through a couple different methods:
 
 ```javascript
+// Get the list of active users from the local cache
+var users = store.findAll('users', {'active': true});
 
-  // Get the list of active users from the local cache
-  var users = store.findAll('users', {'active': true});
-
-  // Get a single user from the local cache
-  var user = store.find('users', {'username': 'amy82'});
-
+// Get a single user from the local cache
+var user = store.find('users', {'username': 'amy82'});
 ```
 
 If you enable `localStorage`, the data is kept persistently, and so you can use the above methods to access it right away without having to wait for the remote calls.
@@ -181,11 +172,9 @@ to trigger some very basic events. Right now it only triggers two different even
 To listen to these events, you can use any of [https://www.npmjs.org/package/event-emitter](Event Emitter)'s binding methods, the most common being `on`:
 
 ```javascript
+// Listen to any change in the store
+store.on('change', function() { ... });
 
-  // Listen to any change in the store
-  store.on('change', function() { ... });
-
-  // Listen to any change of a specific type
-  store.on('change:users', function() { ... });
-
+// Listen to any change of a specific type
+store.on('change:users', function() { ... });
 ```
