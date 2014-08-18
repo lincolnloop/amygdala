@@ -10,15 +10,26 @@ Amygdala is a RESTful HTTP library for JavaScript powered web applications. Simp
 
 ### 1. Install
 
-We currently support browserify ONLY (`standalone version` and `require` support should be in a matter of days until we fix things).
+
+#### Browserify
 
 Amygdala can be installed from npm with `npm install amygdala`.
 
 Dependencies:
 
-* underscore: ^1.6.0
-* q: ^1.0.1
-* event-emitter: ^0.3.1
+* [https://github.com/jashkenas/underscore](underscore): ^1.6.0
+* [https://github.com/kriskowal/q](q): ^1.0.1
+* [https://github.com/medikoo/event-emitter](event-emitter): ^0.3.1
+
+
+#### Bower
+
+Soon.
+
+
+#### Browser
+
+As soon as we replace the event-emitter library with a version that offers browser/globals support.
 
 
 ### 2. Setup
