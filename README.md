@@ -3,12 +3,22 @@ Amygdala
 
 Amygdala is a RESTful HTTP library for JavaScript powered web applications. Simply configure it once with your API schema, and easily do GET, POST, PUT and DELETE requests with minimal effort and a consistent API.
 
+Examples:
+
+```javascript
+// GET
+var users = store.get('users').done(function() { ... });
+
+// POST
+store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { ... });
+```
+
 [![browser support](https://ci.testling.com/lincolnloop/amygdala.png)
 ](https://ci.testling.com/lincolnloop/amygdala)
 
 ## How it works
 
-### 1. Install
+### 1. INSTALL
 
 
 #### Browserify
@@ -32,7 +42,7 @@ Soon.
 As soon as we replace the event-emitter library with a version that offers browser/globals support.
 
 
-### 2. Setup
+### 2. SETUP
 
 To create a new store, define the few possible settings listed below and your API schema.
 
@@ -149,7 +159,7 @@ Since we defined relations on our schema, the message and vote data won't be sto
 `foreignKey` relations are basically for one to one relations. In this case Amygdala will look for an object as value of `discussion` and move it over to the `discussions` "table" if one is found.
 
 
-### 3. Usage
+### 3. USAGE
 
 The methods below, allow you to make remote calls to your API server.
 
@@ -158,7 +168,7 @@ The methods below, allow you to make remote calls to your API server.
 var users = store.get('users').done(function() { ... });
 
 // POST
-store.add('teams', {name: Lincoln Loop, 'active': true}).done(function() { ... });
+store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { ... });
 
 // PUT
 store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true}).done(function() { ... });
