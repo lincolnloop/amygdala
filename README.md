@@ -158,7 +158,7 @@ var users = store.findAll('users', {'active': true});
 var user = store.find('users', {'username': 'amy82'});
 ```
 
-If you enable `localStorage`, the data is kept persistently, and so you can use the above methods to access it right away without having to wait for the remote calls.
+If you enable `localStorage`, the data is kept persistently. Because of this, once you instantiate Amygdala, your cached data will be loaded, and you can use it right away without having to wait for the remote calls.
 
 
 ## Events
