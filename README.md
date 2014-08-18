@@ -51,25 +51,25 @@ To create a new store, define the few possible settings listed below and your AP
 
 ```
 
-#### Configuration options::
+#### Configuration options:
 
   * apiUrl - Full path to your base API url (required).
   * idAttribute - global primary key attribute (required). 
   * headers - Any headers that you need to pass on each API request.
   * localStorage - enable/disable the persistent localStorage cache.
 
-#### Schema options::
+#### Schema options:
   
   * url - relative path for each "table" (required)
   * orderBy - order by which you want to retrieve local cached data. eg (name, -name (for reverse))
   * parse - Accepts a parse method for cases when your API also returns extra meta data.
 
 
-#### Schema relations::
+#### Schema relations:
 
 When you want to include related data under a single request, for example, to minimize HTTP requests, having schema relations allows you to still have a clean separation when interacting with the data locally.
 
-Consider the following schema, that defines discussions that have messages, and messages that have votes::
+Consider the following schema, that defines discussions that have messages, and messages that have votes:
 
 ```javascript
 
@@ -103,7 +103,7 @@ var store = new Amygdala({
 
 ```
 
-In this scenario, doing a query on a discussion will retrieve all messages and votes for that discussion::
+In this scenario, doing a query on a discussion will retrieve all messages and votes for that discussion:
 
 ```javascript
 
@@ -113,7 +113,7 @@ In this scenario, doing a query on a discussion will retrieve all messages and v
 
 Since we defined relations on our schema, the message and vote data won't be stored on the discussion "table", but on it's own "table" instead.
 
-##### OneToMany::
+##### OneToMany:
 
 ```javascript
   'oneToMany': {
@@ -124,7 +124,7 @@ Since we defined relations on our schema, the message and vote data won't be sto
 OneToMany relations are the most common, and should be used when you have related data in form of an array. In this case, 'children' is the attribute name on the response, and 'messages' is the destination "table" for the array data.
 
 
-##### OneToMany::
+##### OneToMany:
 
 ```javascript
   'foreignKey': {
@@ -155,7 +155,7 @@ The methods below, allow you to make remote calls to your API server.
 
 ```
 
-On top of this, Amygdala also stores a copy of your data locally, which you can access through a couple different methods::
+On top of this, Amygdala also stores a copy of your data locally, which you can access through a couple different methods:
 
 ```javascript
 
