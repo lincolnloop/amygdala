@@ -5,7 +5,6 @@
   if (typeof module !== 'undefined' && module.exports) {
     var _ = require('underscore');
     var ajax = require('./lib/ajax');
-    var Q = require('q');
     var EventEmitter = require('event-emitter');
   }
 
@@ -85,7 +84,6 @@
     // and store it under `store` for easy access.
     var store = this._store[type] ? this._store[type] : this._store[type] = {};
     var schema = this._schema[type];
-    var deferred = Q.defer();
 
     if (_.isString(response)) {
       // If the response is a string, try JSON.parse.

@@ -28,7 +28,6 @@ Amygdala can be installed from npm with `npm install amygdala`.
 Dependencies:
 
 * [https://github.com/jashkenas/underscore](underscore): ^1.6.0
-* [https://github.com/kriskowal/q](q): ^1.0.1
 * [https://github.com/medikoo/event-emitter](event-emitter): ^0.3.1
 
 
