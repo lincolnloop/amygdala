@@ -121,10 +121,10 @@ Since we defined relations on our schema, the message and vote data won't be sto
   }
 ```
 
-OneToMany relations are the most common, and should be used when you have related data in form of an array. In this case, 'children' is the attribute name on the response, and 'messages' is the destination "table" for the array data.
+`OneToMany` relations are the most common, and should be used when you have related data in form of an array. In this case, `children` is the attribute name on the response, and `messages` is the destination "table" for the array data.
 
 
-##### OneToMany:
+##### foreignKey:
 
 ```javascript
   'foreignKey': {
@@ -132,7 +132,7 @@ OneToMany relations are the most common, and should be used when you have relate
   }
 ```
 
-foreignKey relations are basically for one to one relations. In this case Amygdala will look for an object as value of "discussions" and move it over to the discussions "table" if one is found.
+`foreignKey` relations are basically for one to one relations. In this case Amygdala will look for an object as value of `discussion` and move it over to the `discussions` "table" if one is found.
 
 
 ### 3. Usage
@@ -142,16 +142,16 @@ The methods below, allow you to make remote calls to your API server.
 ```javascript
 
   // GET
-  var users = store.get('users');
+  var users = store.get('users').done(function() { ... });
   
   // POST
-  store.add('teams', {name: Lincoln Loop, 'active': true});
+  store.add('teams', {name: Lincoln Loop, 'active': true}).done(function() { ... });
   
   // PUT
-  store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true});
+  store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true}).done(function() { ... });
 
   // DELETE
-  store.remove('users', {'url': '/api/v2/user/32/'});
+  store.remove('users', {'url': '/api/v2/user/32/'}).done(function() { ... });
 
 ```
 
