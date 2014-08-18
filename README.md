@@ -1,31 +1,21 @@
 Amygdala
 ========
 
-Amygdala is a RESTful HTTP client for JavaScript powered web applications. Simply configure it once
-with your API schema, and easily do GET, POST, PUT and DELETE requests with minimal effort and a consistent API.
-Amygdala also handles session-based caching on the browser for fast access to your data, and
-aims to have offline through indexedDB and localStorage.
+Amygdala is a RESTful HTTP library for JavaScript powered web applications. Simply configure it once with your API schema, and easily do GET, POST, PUT and DELETE requests with minimal effort and a consistent API.
 
 [![browser support](https://ci.testling.com/lincolnloop/amygdala.png)
 ](https://ci.testling.com/lincolnloop/amygdala)
 
-## The overview
-
-Amygdala requires you to define a schema of how your API and data relations
-look like. With the schema defined, Amygdala gives you some very **simple
-methods to access your API**, and **stores the data locally** in the browser
-session (and eventually in localStorage) for **easy and fast data access**.
-
-NOTE: Amygdala is under heavy development, and schema support is limited.
-
 ## How it works
 
-### 1. Install Amygdala
+### 1. Install
 
 If you're using npm, you can just `npm install amygdala`. Otherwise, download
-the browser version of from the [dist directory](https://github.com/lincolnloop/amygdala/tree/master/dist).
+the latest version from the [dist directory](https://github.com/lincolnloop/amygdala/tree/master/dist), and include it in your project.
 
-### 2. Create your instance and define your schema
+### 2. Setup
+
+To create a new store, define the few possible settings listed below and your API schema.
 
 ```javascript
   var store = new Amygdala({
@@ -46,7 +36,10 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
         'orderBy': 'name',
         'oneToMany': {
           'members': 'members'
-        }
+        },
+        parse: function(data) {
+          return data.results ? data.results : data;
+        },
       },
       'members': {
         'foreignKey': {
@@ -58,12 +51,113 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
 
 ```
 
-### 3. Use it
+#### Configuration options::
+
+  * apiUrl - Full path to your base API url (required).
+  * idAttribute - global primary key attribute (required). 
+  * headers - Any headers that you need to pass on each API request.
+  * localStorage - enable/disable the persistent localStorage cache.
+
+#### Schema options::
+  
+  * url - relative path for each "table" (required)
+  * orderBy - order by which you want to retrieve local cached data. eg (name, -name (for reverse))
+  * parse - Accepts a parse method for cases when your API also returns extra meta data.
+
+
+#### Schema relations::
+
+When you want to include related data under a single request, for example, to minimize HTTP requests, having schema relations allows you to still have a clean separation when interacting with the data locally.
+
+Consider the following schema, that defines discussions that have messages, and messages that have votes::
 
 ```javascript
 
-  // Get a list of users from the remote server
+var store = new Amygdala({
+    'config': {
+      'apiUrl': 'http://localhost:8000',
+      'idAttribute': 'url'
+    },
+    'schema': {
+      'discussions': {
+        'url': '/api/v2/discussion/',
+        'oneToMany': {
+          'children': 'messages'
+        }
+      },
+      'messages': {
+        'url': '/api/v2/message/',
+        'oneToMany': {
+          'votes': 'votes'
+        },
+        'foreignKey': {
+          'discussion': 'discussions'
+        }
+      },
+      'votes': {
+        'url': '/api/v2/vote/'
+      }
+    }
+  }
+);
+
+```
+
+In this scenario, doing a query on a discussion will retrieve all messages and votes for that discussion::
+
+```javascript
+
+  store.get('discussions', {'url': '/api/v2/discussion/85273/'}).then(function(){ ... });
+
+```
+
+Since we defined relations on our schema, the message and vote data won't be stored on the discussion "table", but on it's own "table" instead.
+
+##### OneToMany::
+
+```javascript
+  'oneToMany': {
+    'children': 'messages'
+  }
+```
+
+OneToMany relations are the most common, and should be used when you have related data in form of an array. In this case, 'children' is the attribute name on the response, and 'messages' is the destination "table" for the array data.
+
+
+##### OneToMany::
+
+```javascript
+  'foreignKey': {
+    'discussion': 'discussions'
+  }
+```
+
+foreignKey relations are basically for one to one relations. In this case Amygdala will look for an object as value of "discussions" and move it over to the discussions "table" if one is found.
+
+
+### 3. Usage
+
+The methods below, allow you to make remote calls to your API server.
+
+```javascript
+
+  // GET
   var users = store.get('users');
+  
+  // POST
+  store.add('teams', {name: Lincoln Loop, 'active': true});
+  
+  // PUT
+  store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active': true});
+
+  // DELETE
+  store.remove('users', {'url': '/api/v2/user/32/'});
+
+```
+
+On top of this, Amygdala also stores a copy of your data locally, which you can access through a couple different methods::
+
+```javascript
 
   // Get the list of active users from the local cache
   var users = store.findAll('users', {'active': true});
@@ -71,27 +165,10 @@ the browser version of from the [dist directory](https://github.com/lincolnloop/
   // Get a single user from the local cache
   var user = store.find('users', {'username': 'amy82'});
 
-  // Add a new user
-  store.add('users', {'username': 'gdala67', 'active': false});
-
-  // update an existing user
-  // NOTE: At the moment we rely on the url attribute containing
-  // the API endpoint for the user.
-  store.update('users', {'url': '/api/v2/user/32/', 'active': true});
-
-  // delete a user
-  store.remove('users', {'url': '/api/v2/user/32/'});
-
 ```
 
-## Configuration
+If you enable `localStorage`, the data is kept persistently, and so you can use the above methods to access it right away without having to wait for the remote calls.
 
-Here are the few configuration settings you can set:
-
-* apiUrl // your base API url (protocol, domain name, port).
-* idAttribute // if you want to use a custom "primary key"
-* headers // holds a key/value list of headers to be sent on every request
-* localStorage // If set to `true`, all your data will be persist across sessions (read-only).
 
 ## Events
 
