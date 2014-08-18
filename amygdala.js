@@ -2,7 +2,6 @@
 
 var _ = require('underscore');
 var ajax = require('./lib/ajax');
-var log = require('loglevel');
 var Q = require('q');
 var EventEmitter = require('event-emitter');
 
@@ -13,7 +12,6 @@ var Amygdala = function(options) {
   // - options (Object)
   //   - config (apiUrl, headers)
   //   - schema
-  log.debug('Amygdala#constructor', options);
 
   this._config = options.config;
   this._schema = options.schema;
@@ -57,10 +55,8 @@ Amygdala.prototype._getURI = function(type) {
 Amygdala.prototype._emitChange = function(type) {
 
   // TODO: Add tests for debounced events
-  //console.log(this._changeEvents);
   if (!this._changeEvents[type]) {
     this._changeEvents[type] = _.debounce(_.partial(function(type) {
-      console.log('change emit', type);
       // emit changes events
       this.emit('change', type);
       // change:<type>
@@ -171,7 +167,6 @@ Amygdala.prototype._remove = function(type, object) {
   //
   // type: schema key/store (teams, users)
   // response: response to store in local cache
-  log.debug('Amygdala#_remove', type, object);
 
   this._emitChange(type);
 
@@ -212,7 +207,6 @@ Amygdala.prototype.get = function(type, params, options) {
   // params: extra queryString params (?team=xpto&user=xyz)
   // options: extra options
   // - url: url override
-  log.debug('Amygdala#get', type, params, options);
 
   // Default to the URI for 'type'
   options = options || {};
@@ -243,7 +237,6 @@ Amygdala.prototype.add = function(type, object, options) {
   // object: object to update local and remote
   // options: extra options
   // -  url: url override
-  log.debug('Amygdala#add', type, object, options);
 
   // Default to the URI for 'type'
   options = options || {};
@@ -272,7 +265,6 @@ Amygdala.prototype.update = function(type, object) {
   //
   // type: schema key/store (teams, users)
   // object: object to update local and remote
-  log.debug('Amygdala#update', type, object);
 
   if (!object.url) {
     throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
@@ -299,7 +291,6 @@ Amygdala.prototype.remove = function(type, object) {
   //
   // type: schema key/store (teams, users)
   // object: object to update local and remote
-  log.debug('Amygdala#delete', type, object);
 
   if (!object.url) {
     throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');

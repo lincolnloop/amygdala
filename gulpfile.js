@@ -26,7 +26,6 @@ gulp.task('build', function() {
       if (production) {
         // Externalize dependencies so they aren't included in the build
         bundler.external('underscore');
-        bundler.external('loglevel');
         bundler.external('q');
         bundler.external('event-emitter');
 
@@ -45,7 +44,6 @@ gulp.task('build', function() {
       namespace: 'Amygdala',
       deps: {
         'underscore': '_',
-        'loglevel': 'loglevel',
         'q': 'Q',
         'event-emitter': 'EventEmitter'
       },
