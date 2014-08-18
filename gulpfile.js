@@ -27,7 +27,6 @@ gulp.task('build', function() {
         // Externalize dependencies so they aren't included in the build
         bundler.external('underscore');
         bundler.external('q');
-        bundler.external('event-emitter');
 
         // Export Amygdala as 'amygdala'
         bundler.require('./amygdala.js', {expose: 'amygdala'});
@@ -44,8 +43,7 @@ gulp.task('build', function() {
       namespace: 'Amygdala',
       deps: {
         'underscore': '_',
-        'q': 'Q',
-        'event-emitter': 'EventEmitter'
+        'q': 'Q'
       },
       expose: 'amygdala'
     }, {'imports': {'_': _}}));
