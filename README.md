@@ -10,7 +10,7 @@ Amygdala is a RESTful HTTP library for JavaScript powered web applications. Simp
 
 ### 1. Install
 
-We currently support browserify ONLY (standalone version and required support should be in a matter of days until we fix things).
+We currently support browserify ONLY (`standalone version` and `require` support should be in a matter of days until we fix things).
 
 Amygdala can be installed from npm with `npm install amygdala`.
 
