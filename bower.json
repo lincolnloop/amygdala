@@ -4,7 +4,7 @@
   "version": "0.3.4",
   "homepage": "https://github.com/lincolnloop/amygdala",
   "authors": [
-    "Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)"
+    "Marco Louro <marco@lincolnloop.com>"
   ],
   "description": "RESTful HTTP library for JavaScript powered web applications",
   "keywords": [
