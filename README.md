@@ -33,13 +33,13 @@ Soon.
 
 #### Browser
 
-Download the latest [https://github.com/lincolnloop/amygdala/blob/master/amygdala.js](amygdala.js) file. Minified/build version coming soon.
+Download the latest [amygdala.js](https://github.com/lincolnloop/amygdala/blob/master/amygdala.js) file. Minified/build version coming soon.
 
 ##### Dependencies:
 
-* [https://github.com/jashkenas/underscore](underscore): ^1.6.0
-* [https://github.com/kriskowal/q](q): ^1.0.1
-* [https://github.com/Wolfy87/EventEmitter](Wolfy87/EventEmitter): ^4.2.6
+* [underscore](https://github.com/jashkenas/underscore): ^1.6.0
+* [q](https://github.com/kriskowal/q): ^1.0.1
+* [Wolfy87/EventEmitter](https://github.com/Wolfy87/EventEmitter): ^4.2.6
 
 
 ### 2. SETUP
@@ -192,13 +192,13 @@ If you enable `localStorage`, the data is kept persistently. Because of this, on
 
 ## Events
 
-Amygdala uses [https://github.com/Wolfy87/EventEmitter](Wolfy87/EventEmitter) under the hood
+Amygdala uses [Wolfy87/EventEmitter](https://github.com/Wolfy87/EventEmitter) under the hood
 to trigger some very basic events. Right now it only triggers two different events:
 
 * change
 * change:type
 
-To listen to these events, you can use any of [https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#using-eventemitterr](Event Emitter)'s binding methods or the [https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#method-aliases](aliases), the most common one being `on`:
+To listen to these events, you can use any of [Event Emitter's](https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#using-eventemitterr) binding methods or the [aliases](https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#method-aliases), the most common one being `on`:
 
 ```javascript
 // Listen to any change in the store
