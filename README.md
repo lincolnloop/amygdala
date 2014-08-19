@@ -21,14 +21,14 @@ store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { .
 ### 1. INSTALL
 
 
-#### Browserify
+#### NPM/Browserify
 
-Amygdala can be installed from npm with `npm install amygdala`.
+`npm install amygdala`.
 
 
 #### Bower
 
-Soon.
+`bower install amygdala`
 
 
 #### Browser
