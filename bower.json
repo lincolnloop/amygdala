@@ -24,6 +24,6 @@
   "dependencies": {
     "underscore"  : ">=1.6.0",
     "q": ">=1.0.1",
-    "EventEmitter": ">=4.2.6"
+    "eventEmitter": ">=4.2.6"
   }
 }
