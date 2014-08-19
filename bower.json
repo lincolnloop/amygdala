@@ -1,10 +1,10 @@
 {
   "name": "Amygdala",
   "main": "amygdala.js",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "homepage": "https://github.com/lincolnloop/amygdala",
   "authors": [
-    "Marco Louro <marco@lincolnloop.com>"
+    "Marco Louro <marco@lincolnloop.com> (http://lincolnloop.com)"
   ],
   "description": "RESTful HTTP library for JavaScript powered web applications",
   "keywords": [
@@ -25,5 +25,5 @@
     "underscore"  : ">=1.6.0",
     "q": ">=1.0.1",
     "EventEmitter": ">=4.2.6"
-  },
+  }
 }
