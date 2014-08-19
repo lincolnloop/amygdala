@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "underscore": "^1.6.0",
-    "event-emitter": "^0.3.1"
+    "q": "^1.0.1",
+    "wolfy87-eventemitter": "^4.2.6"
   }
 }
