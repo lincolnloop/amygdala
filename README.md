@@ -25,11 +25,6 @@ store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { .
 
 Amygdala can be installed from npm with `npm install amygdala`.
 
-Dependencies:
-
-* [https://github.com/jashkenas/underscore](underscore): ^1.6.0
-* [https://github.com/medikoo/event-emitter](event-emitter): ^0.3.1
-
 
 #### Bower
 
@@ -38,7 +33,13 @@ Soon.
 
 #### Browser
 
-As soon as we replace the event-emitter library with a version that offers browser/globals support.
+Download the latest [https://github.com/lincolnloop/amygdala/blob/master/amygdala.js](amygdala.js) file. Minified/build version coming soon.
+
+##### Dependencies:
+
+* [https://github.com/jashkenas/underscore](underscore): ^1.6.0
+* [https://github.com/kriskowal/q](q): ^1.0.1
+* [https://github.com/Wolfy87/EventEmitter](Wolfy87/EventEmitter): ^4.2.6
 
 
 ### 2. SETUP
@@ -46,36 +47,36 @@ As soon as we replace the event-emitter library with a version that offers brows
 To create a new store, define the few possible settings listed below and your API schema.
 
 ```javascript
-  var store = new Amygdala({
-    'config': {
-      'apiUrl': 'http://localhost:8000',
-      'idAttribute': 'url',
-      'headers': {
-        'X-CSRFToken': getCookie('csrftoken')
-      },
-      'localStorage': true
+var store = new Amygdala({
+  'config': {
+    'apiUrl': 'http://localhost:8000',
+    'idAttribute': 'url',
+    'headers': {
+      'X-CSRFToken': getCookie('csrftoken')
     },
-    'schema': {
-      'users': {
-        'url': '/api/v2/user/'
+    'localStorage': true
+  },
+  'schema': {
+    'users': {
+      'url': '/api/v2/user/'
+    },
+    'teams': {
+      'url': '/api/v2/team/',
+      'orderBy': 'name',
+      'oneToMany': {
+        'members': 'members'
       },
-      'teams': {
-        'url': '/api/v2/team/',
-        'orderBy': 'name',
-        'oneToMany': {
-          'members': 'members'
-        },
-        parse: function(data) {
-          return data.results ? data.results : data;
-        },
+      parse: function(data) {
+        return data.results ? data.results : data;
       },
-      'members': {
-        'foreignKey': {
-          'user': 'users'
-        }
+    },
+    'members': {
+      'foreignKey': {
+        'user': 'users'
       }
     }
-  });
+  }
+});
 ```
 
 #### Configuration options:

@@ -1,7 +1,7 @@
 {
   "name": "amygdala",
-  "version": "0.3.2",
-  "description": "RESTful HTTP client for JavaScript powered web applications",
+  "version": "0.3.3",
+  "description": "RESTful HTTP library for JavaScript powered web applications",
   "keywords": [
     "REST",
     "client",
@@ -10,6 +10,7 @@
     "localStorage",
     "store",
     "browser",
+    "library",
     "cache",
     "ajax",
     "offline"
@@ -25,9 +26,7 @@
   },
   "main": "amygdala.js",
   "files": [
-    "amygdala.js",
-    "lib/ajax.js",
-    "lib/serialize.js"
+    "amygdala.js"
   ],
   "scripts": {
     "test": "mocha --reporter spec --ui bdd"
