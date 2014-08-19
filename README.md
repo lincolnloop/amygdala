@@ -192,13 +192,13 @@ If you enable `localStorage`, the data is kept persistently. Because of this, on
 
 ## Events
 
-Amygdala uses [https://www.npmjs.org/package/event-emitter](Event Emitter) under the hood
+Amygdala uses [https://github.com/Wolfy87/EventEmitter](Wolfy87/EventEmitter) under the hood
 to trigger some very basic events. Right now it only triggers two different events:
 
 * change
 * change:type
 
-To listen to these events, you can use any of [https://www.npmjs.org/package/event-emitter](Event Emitter)'s binding methods, the most common being `on`:
+To listen to these events, you can use any of [https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#using-eventemitterr](Event Emitter)'s binding methods or the [https://github.com/Wolfy87/EventEmitter/blob/master/docs/guide.md#method-aliases](aliases), the most common one being `on`:
 
 ```javascript
 // Listen to any change in the store
