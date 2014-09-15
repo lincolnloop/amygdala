@@ -7,7 +7,7 @@ Examples:
 
 ```javascript
 // GET
-var users = store.get('users').done(function() { ... });
+store.get('users').done(function() { ... });
 
 // POST
 store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { ... });
@@ -165,7 +165,7 @@ The methods below, allow you to make remote calls to your API server.
 
 ```javascript
 // GET
-var users = store.get('users').done(function() { ... });
+store.get('users').done(function() { ... });
 
 // POST
 store.add('teams', {'name': 'Lincoln Loop', 'active': true}).done(function() { ... });
