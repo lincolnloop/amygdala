@@ -88,7 +88,7 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
   request.onload = function() {
     // status 200 OK, 201 CREATED, 20* ALL OK
     if (request.status.toString().substr(0, 2) === '20') {
-      deferred.resolve(request.response);
+      deferred.resolve(request);
     } else {
       deferred.reject(new Error('Request failed with status code ' + request.status));
     }
@@ -233,6 +233,10 @@ Amygdala.prototype._set = function(type, response, options) {
   return response.length === 1 ? response[0] : response;
 };
 
+Amygdala.prototype._setAjax = function(type, request, options) {
+  return this._set(type, request.response, options);
+}
+
 Amygdala.prototype._remove = function(type, object) {
   // Removes an item of `type` from this._store.
   //
@@ -284,7 +288,7 @@ Amygdala.prototype.get = function(type, params, options) {
   _.defaults(options, {'url': this._getURI(type)});
 
   return this._get(options.url, params)
-    .then(_.partial(this._set, type).bind(this));
+    .then(_.partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._post = function(url, data) {
@@ -314,7 +318,7 @@ Amygdala.prototype.add = function(type, object, options) {
   _.defaults(options, {'url': this._getURI(type)});
 
   return this._post(options.url, object)
-    .then(_.partial(this._set, type).bind(this));
+    .then(_.partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._put = function(url, data) {
@@ -342,7 +346,7 @@ Amygdala.prototype.update = function(type, object) {
   }
 
   return this._put(object.url, object)
-    .then(_.partial(this._set, type).bind(this));
+    .then(_.partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._delete = function(url, data) {
