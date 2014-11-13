@@ -163,6 +163,7 @@ Amygdala.prototype._set = function(type, response, options) {
   // and store it under `store` for easy access.
   var store = this._store[type] ? this._store[type] : this._store[type] = {};
   var schema = this._schema[type];
+  var wrappedResponse = false;
 
   if (_.isString(response)) {
     // If the response is a string, try JSON.parse.
@@ -185,6 +186,7 @@ Amygdala.prototype._set = function(type, response, options) {
     } else {
       // Otherwise, just wrap it in an array and hope for the best.
       response = [response];
+      wrappedResponse = true;
     }
   }
 
@@ -268,7 +270,7 @@ Amygdala.prototype._set = function(type, response, options) {
   }.bind(this));
 
   // return our data as the original api call's response
-  return response.length === 1 ? response[0] : response;
+  return wrappedResponse && response.length === 1 ? response[0] : response;
 };
 
 Amygdala.prototype._setAjax = function(type, request, options) {
