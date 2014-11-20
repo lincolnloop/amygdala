@@ -190,6 +190,10 @@ Amygdala.prototype._set = function(type, response, options) {
   }
 
   _.each(response, function(obj) {
+
+    // store the object under this._store['type']['id']
+    store[obj[this._config.idAttribute]] = obj;
+
     // handle oneToMany relations
     _.each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
       var related = obj[relatedAttr];
@@ -205,9 +209,23 @@ Amygdala.prototype._set = function(type, response, options) {
           this._set(relatedType, related);
           // and replace the list of objects within `obj`
           // by a list of `id's
-          obj[relatedAttr] = _.map(related, function(item) {
+          obj['__' + relatedAttr] = _.map(related, function(item) {
             return item[this._config.idAttribute];
           }.bind(this));
+
+          delete obj[relatedAttr];
+
+          // obj.__defineGetter__ is not recommended at this point in time
+          Object.defineProperty(obj, relatedAttr, {
+            get: _.partial(function (relatedName) {
+              var results = [];
+              return obj['__' + relatedAttr].map(function(value) {
+                var filter = {};
+                filter[this.idAttribute] = value;
+                return this.find(relatedName, filter);
+              }.bind(this));
+            }.bind(this), relatedAttr), 
+          });
         }
       }
     }.bind(this));
@@ -230,8 +248,6 @@ Amygdala.prototype._set = function(type, response, options) {
       }
     }.bind(this));
 
-    // store the object under this._store['type']['id']
-    store[obj[this._config.idAttribute]] = obj;
 
     // emit change events
     if (!options || options.silent !== true) {

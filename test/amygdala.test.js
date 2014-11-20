@@ -119,11 +119,17 @@ describe('Amygdala', function() {
       expect(Object.keys(store._store['members'])).to.have.length(3);
     });
 
-    it('replaces objects by id\'s in one-to-many relations', function() {
+    it('stores id\'s from one-to-many relations in a private variable', function() {
       expect(
-        store._store.teams['/api/v2/team/9/'].members
+        store._store.teams['/api/v2/team/9/'].__members
           .indexOf('/api/v2/team/9/member/f31abb30271cdecae75a6227128c8fd9/')
       ).to.not.equal(-1);
+    });
+
+    it('generates a getter method for retrieving one-to-many relations', function() {
+      expect(
+        store._store.teams['/api/v2/team/9/'].__lookupGetter__("members")
+      ).to.not.equal(undefined);
     });
 
     it('replaces objects by id\'s in foreign-key relations', function() {
