@@ -1,4 +1,4 @@
-[Amygdala logo](https://raw.githubusercontent.com/lincolnloop/amygdala/master/logo/amygdala.png)
+![Amygdala logo](https://raw.githubusercontent.com/lincolnloop/amygdala/master/static/logo.png)
 
 Amygdala is a RESTful HTTP library for JavaScript powered web applications. Simply configure it once with your API schema, and easily do GET, POST, PUT and DELETE requests with minimal effort and a consistent API.
 
