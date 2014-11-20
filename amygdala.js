@@ -213,19 +213,25 @@ Amygdala.prototype._set = function(type, response, options) {
             return item[this._config.idAttribute];
           }.bind(this));
 
-          delete obj[relatedAttr];
+          // if relatedAttr is not a getter, set it up as one
+          // NOTE: Not sure how well supported __lookupGetter__ is.
+          if (!obj.__lookupGetter__(relatedAttr)) {
 
-          // obj.__defineGetter__ is not recommended at this point in time
-          Object.defineProperty(obj, relatedAttr, {
-            get: _.partial(function (relatedName) {
-              var results = [];
-              return obj['__' + relatedAttr].map(function(value) {
-                var filter = {};
-                filter[this.idAttribute] = value;
-                return this.find(relatedName, filter);
-              }.bind(this));
-            }.bind(this), relatedAttr), 
-          });
+            // delete the related raw data
+            delete obj[relatedAttr];
+
+            // obj.__defineGetter__ is not recommended at this point in time
+            Object.defineProperty(obj, relatedAttr, {
+              get: _.partial(function (relatedName) {
+                var results = [];
+                return obj['__' + relatedAttr].map(function(value) {
+                  var filter = {};
+                  filter[this._config.idAttribute] = value;
+                  return this.find(relatedName, filter);
+                }.bind(this));
+              }.bind(this), relatedAttr), 
+            });
+          }
         }
       }
     }.bind(this));

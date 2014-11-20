@@ -418,6 +418,11 @@ describe('Amygdala', function() {
         .to.equal('unicode');
     });
 
+    it('can find an object by id and access oneToMany relations via getter', function() {
+      expect(store.find('teams', '/api/v2/team/9/').members[0].user)
+        .to.equal('/api/v2/user/66238278d2ce670dcb448f96258dc732/');
+    });
+
   });
 
   describe('#orderBy', function() {
