@@ -132,6 +132,10 @@ describe('Amygdala', function() {
       ).to.equal('/api/v2/message/3798/');
     });
 
+    it('sets up a helper method to get related objects', function() {
+      expect(store.find('teams', '/api/v2/team/9/').related).to.exist;
+    });
+
     it('uses data parsers when they are defined', function() {
       // discussions have a non-standard data structure due to pagintation,
       // so the schema provides a `parse` method.
@@ -160,6 +164,19 @@ describe('Amygdala', function() {
       };
 
       expect(invalidSet).to.throw('Invalid JSON from the API response.');
+    });
+
+  });
+
+  describe('#<obj>.related(<attributeName>)', function() {
+
+    it('returns a list of objects based on the oneToMany relation', function() {
+      expect(store.find('teams', '/api/v2/team/9/').related("members")).to.have.length(3);
+    });
+
+    it('returns an object for foreignKey relations', function() {
+      expect(store.find('messages', '/api/v2/message/3789/').related("discussion").title)
+        .to.equal("unicode");
     });
 
   });

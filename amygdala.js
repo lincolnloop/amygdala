@@ -14,7 +14,6 @@ var Amygdala = function(options) {
   // - options (Object)
   //   - config (apiUrl, headers)
   //   - schema
-
   this._config = options.config;
   this._schema = options.schema;
   this._headers = this._config.headers;
@@ -190,6 +189,9 @@ Amygdala.prototype._set = function(type, response, options) {
   }
 
   _.each(response, function(obj) {
+    // store the object under this._store['type']['id']
+    store[obj[this._config.idAttribute]] = obj;
+
     // handle oneToMany relations
     _.each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
       var related = obj[relatedAttr];
@@ -230,8 +232,33 @@ Amygdala.prototype._set = function(type, response, options) {
       }
     }.bind(this));
 
-    // store the object under this._store['type']['id']
-    store[obj[this._config.idAttribute]] = obj;
+    // set up a related method to fetch other related objects
+    // as defined in the schema for the store.
+    store[obj[this._config.idAttribute]].related = _.partial(function(schema, obj, attributeName) {
+      var that = this;
+      if (schema.oneToMany && attributeName in schema.oneToMany) {
+        //
+        // if oneToMany relation
+        //
+        // loop through each id in the obj
+        // and return the full related object list as the response
+        return obj[attributeName].map(function(value) {
+          // find in related `table` by id
+          return this.find(schema.oneToMany[attributeName], value);
+        }.bind(this)).filter(function(value) {
+          // filter out undefined/null values
+          return !!value;
+        });
+      } else if (schema.foreignKey && attributeName in schema.foreignKey) {
+        //
+        // else, if foreignKey relation
+        //
+        // 
+        // find in related `table` by id
+        return this.find(schema.foreignKey[attributeName], obj[attributeName]);
+      }
+      return null;
+    }.bind(this), schema, obj);
 
     // emit change events
     if (!options || options.silent !== true) {

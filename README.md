@@ -160,6 +160,8 @@ Since we defined relations on our schema, the message and vote data won't be sto
 
 ### 3. USAGE
 
+#### Querying the remote API server:
+
 The methods below, allow you to make remote calls to your API server.
 
 ```javascript
@@ -176,18 +178,43 @@ store.update('users', {'url': '/api/v2/user/32/', 'username': 'amy82', 'active':
 store.remove('users', {'url': '/api/v2/user/32/'}).done(function() { ... });
 ```
 
+
+#### In memory storage API:
+
 On top of this, Amygdala also stores a copy of your data locally, which you can access through a couple different methods:
 
+
+###### Find and filtering:
+
 ```javascript
-// Get the list of active users from the local cache
+// Get the list of active users from memory
 var users = store.findAll('users', {'active': true});
 
-// Get a single user from the local cache
+// Get a single user from memory
 var user = store.find('users', {'username': 'amy82'});
+
+// Get a single user by id for memory
+var user = store.find('users', 1103747470);
 ```
 
-If you enable `localStorage`, the data is kept persistently. Because of this, once you instantiate Amygdala, your cached data will be loaded, and you can use it right away without having to wait for the remote calls.
+If you enable `localStorage`, the data is kept persistently. Because of this, once you instantiate Amygdala, your cached data will be loaded, and you can use it right away without having to wait for the remote calls. (We do not recommend using `localStorage` for production yet)
 
+
+##### Fetching related data:
+
+By defining your schema and creating relations between data, you are then able to query your data objects for the related objects.
+
+In the example schema above, discussions have a oneToMany relation with messages, and messages have a foreignKey relation back to discussions. This is how it you can use them.
+
+```javascript
+// Fetching related messages for a discussion (oneToMay)
+var messages = store.find('discussions', '/api/v2/discussion/85273/').related('messages');
+
+// Getting the discussion object from a message (foreignKey)
+var discussion = store.find('message', '/api/v2/message/81273/').related('discussion');
+```
+
+Note that Amygdala doesn't fetch data automagically for you here, so it's up you to fetch it before running the query.
 
 ## Events
 
