@@ -116,12 +116,23 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
 // ------------------------------
 // Internal utils methods
 // ------------------------------
-Amygdala.prototype._getURI = function(type) {
+Amygdala.prototype._getURI = function(type, params) {
+  var url;
   // get absolute uri for api endpoint
   if (!this._schema[type] || !this._schema[type].url) {
     throw new Error('Invalid type. Acceptable types are: ' + Object.keys(this._schema));
   }
-  return this._config.apiUrl + this._schema[type].url;
+  url = this._config.apiUrl + this._schema[type].url;
+
+  // if the `idAttribute` specified by the config 
+  // exists as a key in `params` append it's value to the url,
+  // and remove it from `params` so it's not sent in the query string.
+  if (params && this._config.idAttribute in params) {
+    url += params[this._config.idAttribute];
+    delete params[this._config.idAttribute];
+  }
+
+  return url;
 },
 
 Amygdala.prototype._emitChange = function(type) {
@@ -285,7 +296,7 @@ Amygdala.prototype.get = function(type, params, options) {
 
   // Default to the URI for 'type'
   options = options || {};
-  _.defaults(options, {'url': this._getURI(type)});
+  _.defaults(options, {'url': this._getURI(type, params)});
 
   return this._get(options.url, params)
     .then(_.partial(this._setAjax, type).bind(this));
@@ -340,12 +351,17 @@ Amygdala.prototype.update = function(type, object) {
   //
   // type: schema key/store (teams, users)
   // object: object to update local and remote
+  var url = object.url;
 
-  if (!object.url) {
-    throw new Error('Missing object.url attribute. A url attribute is required for a PUT request.');
+  if (!url && this._config.idAttribute in object) {
+    url = this._getURI(type, object);
   }
 
-  return this._put(object.url, object)
+  if (!url) {
+    throw new Error('Missing required object.url or ' + this._config.idAttribute + ' attribute.');
+  }
+
+  return this._put(url, object)
     .then(_.partial(this._setAjax, type).bind(this));
 };
 
@@ -366,12 +382,17 @@ Amygdala.prototype.remove = function(type, object) {
   //
   // type: schema key/store (teams, users)
   // object: object to update local and remote
+  var url = object.url;
 
-  if (!object.url) {
-    throw new Error('Missing object.url attribute. A url attribute is required for a DELETE request.');
+  if (!url && this._config.idAttribute in object) {
+    url = this._getURI(type, object);
   }
 
-  return this._delete(object.url, object)
+  if (!url) {
+    throw new Error('Missing required object.url or ' + this._config.idAttribute + ' attribute.');
+  }
+
+  return this._delete(url, object)
     .then(_.partial(this._remove, type, object).bind(this));
 };
 

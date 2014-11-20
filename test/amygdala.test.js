@@ -428,6 +428,38 @@ describe('Amygdala', function() {
 
   });
 
+  describe('custom idAttribute', function() {
+    // clone the settings, so changes don't affect the other tests
+    var customSettings = _.clone(settings);
+    // make sure we clone config too, so it does not override
+    // the default config for the other tests.
+    customSettings.config = _.extend(_.clone(customSettings.config), {'idAttribute': 'id'});
+    // instatiate the customStore
+    var customStore = new Amygdala(customSettings);
+
+    it('is sent on GET requests as part of the url and not as a query string', function() {
+      customStore.get('teams', {'id': 31});
+
+      expect(xhr.open).to.have.been.calledOnce
+        .and.have.been.calledWith('GET', 'http://localhost:8000/api/v2/team/31', true);
+    });
+
+    it('is set on PUT requests as part of the url and not as data', function() {
+      customStore.update('teams', {'id': 31});
+
+      expect(xhr.open).to.have.been.calledOnce
+        .and.have.been.calledWith('PUT', 'http://localhost:8000/api/v2/team/31', true);
+    });
+
+    it('is set on DELETE requests as part of the url and not as data', function() {
+      customStore.remove('teams', {'id': 31});
+
+      expect(xhr.open).to.have.been.calledOnce
+        .and.have.been.calledWith('DELETE', 'http://localhost:8000/api/v2/team/31', true);
+    });
+
+  });
+
   /*
   describe('^events', function() {
 
