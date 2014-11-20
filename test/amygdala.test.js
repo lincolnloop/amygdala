@@ -486,7 +486,7 @@ describe('Amygdala', function() {
       store.on('change:teams', callback);
       // trigger the event on add
       store._set('teams', {'name': 'The <type> Event Team'});
-      
+
       expect(callback).to.have.been.calledOnce;
     });
 
@@ -499,7 +499,7 @@ describe('Amygdala', function() {
         'url': '/api/v2/team/9/',
         'name': 'The Event Team'
       });
-      
+
       expect(callback).to.have.been.calledOnce;
     });
 
@@ -516,7 +516,7 @@ describe('Amygdala', function() {
         'url': '/api/v2/team/10/',
         'name': 'Zee Loop'
       });
-      
+
       expect(callback).to.have.been.calledOnce;
     });
 
@@ -533,7 +533,7 @@ describe('Amygdala', function() {
         'url': '/api/v2/user/10/',
         'name': 'Me Robot'
       });
-      
+
       expect(callback).to.have.been.calledTwice;
     });
 
@@ -546,7 +546,7 @@ describe('Amygdala', function() {
         'url': '/api/v2/team/9/',
         'name': 'The Event Team'
       });
-      
+
       expect(callback).to.have.been.calledOnce;
     });
 

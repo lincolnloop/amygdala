@@ -232,10 +232,10 @@ Amygdala.prototype._set = function(type, response, options) {
       }
     }.bind(this));
 
+    // obj.related()
     // set up a related method to fetch other related objects
     // as defined in the schema for the store.
-    store[obj[this._config.idAttribute]].related = _.partial(function(schema, obj, attributeName) {
-      var that = this;
+    obj.related = _.partial(function(schema, obj, attributeName) {
       if (schema.oneToMany && attributeName in schema.oneToMany) {
         //
         // if oneToMany relation
@@ -253,7 +253,7 @@ Amygdala.prototype._set = function(type, response, options) {
         //
         // else, if foreignKey relation
         //
-        // 
+        //
         // find in related `table` by id
         return this.find(schema.foreignKey[attributeName], obj[attributeName]);
       }
