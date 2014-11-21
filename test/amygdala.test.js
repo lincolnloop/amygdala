@@ -61,11 +61,18 @@ describe('Amygdala', function() {
       'messages': {
         'url': '/api/v2/message/',
         'oneToMany': {
-          'attachments': 'attachments'
+          'attachments': 'attachments',
+          'votes': 'votes'
         },
         'foreignKey': {
           'user': 'users',
           'discussion': 'discussions'
+        }
+      },
+      'votes': {
+        'url': '/api/v2/vote/',
+        'foreignKey': {
+          'message': 'messages'
         }
       }
     }
@@ -171,12 +178,12 @@ describe('Amygdala', function() {
   describe('#<obj>.related(<attributeName>)', function() {
 
     it('returns a list of objects based on the oneToMany relation', function() {
-      expect(store.find('teams', '/api/v2/team/9/').related("members")).to.have.length(3);
+      expect(store.find('messages', '/api/v2/message/3798/').related('votes')).to.have.length(1);
     });
 
     it('returns an object for foreignKey relations', function() {
-      expect(store.find('messages', '/api/v2/message/3789/').related("discussion").title)
-        .to.equal("unicode");
+      expect(store.find('messages', '/api/v2/message/3789/').related('discussion').title)
+        .to.equal('unicode');
     });
 
   });
