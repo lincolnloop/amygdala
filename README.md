@@ -208,10 +208,10 @@ In the example schema above, discussions have a oneToMany relation with messages
 
 ```javascript
 // Fetching related messages for a discussion (oneToMay)
-var messages = store.find('discussions', '/api/v2/discussion/85273/').related('messages');
+var messages = store.find('discussions', '/api/v2/discussion/85273/').getRelated('messages');
 
 // Getting the discussion object from a message (foreignKey)
-var discussion = store.find('message', '/api/v2/message/81273/').related('discussion');
+var discussion = store.find('message', '/api/v2/message/81273/').getRelated('discussion');
 ```
 
 Note that Amygdala doesn't fetch data automagically for you here, so it's up you to fetch it before running the query.
