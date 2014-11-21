@@ -235,7 +235,7 @@ Amygdala.prototype._set = function(type, response, options) {
     // obj.related()
     // set up a related method to fetch other related objects
     // as defined in the schema for the store.
-    obj.related = _.partial(function(schema, obj, attributeName) {
+    obj.getRelated = _.partial(function(schema, obj, attributeName) {
       if (schema.oneToMany && attributeName in schema.oneToMany) {
         //
         // if oneToMany relation

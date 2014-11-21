@@ -140,7 +140,7 @@ describe('Amygdala', function() {
     });
 
     it('sets up a helper method to get related objects', function() {
-      expect(store.find('teams', '/api/v2/team/9/').related).to.exist;
+      expect(store.find('teams', '/api/v2/team/9/').getRelated).to.exist;
     });
 
     it('uses data parsers when they are defined', function() {
@@ -175,14 +175,14 @@ describe('Amygdala', function() {
 
   });
 
-  describe('#<obj>.related(<attributeName>)', function() {
+  describe('#<obj>.getRelated(<attributeName>)', function() {
 
     it('returns a list of objects based on the oneToMany relation', function() {
-      expect(store.find('messages', '/api/v2/message/3798/').related('votes')).to.have.length(1);
+      expect(store.find('messages', '/api/v2/message/3798/').getRelated('votes')).to.have.length(1);
     });
 
     it('returns an object for foreignKey relations', function() {
-      expect(store.find('messages', '/api/v2/message/3789/').related('discussion').title)
+      expect(store.find('messages', '/api/v2/message/3789/').getRelated('discussion').title)
         .to.equal('unicode');
     });
 
