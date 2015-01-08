@@ -161,6 +161,31 @@ describe('Amygdala', function() {
       expect(_.pluck(jsonStore._store['users'], 'name')).to.contain('Brandon Konkle');
     });
 
+    it('Single item result lists are returned correctly', function() {
+      // Create an empty store for this test
+      var jsonStore = new Amygdala(settings);
+
+      // Set the users with a JSON string
+      jsonStore._set('users', [userFixtures[0]]);
+
+      expect(Object.keys(jsonStore._store['users'])).to.have.length(1);
+      expect(_.pluck(jsonStore._store['users'], 'name')).to.contain('Martin');
+    });
+
+    it('Single item result is returned correctly', function() {
+      // Create an empty store for this test
+      var jsonStore = new Amygdala(settings);
+
+      // Set the users with a JSON string
+      jsonStore._set('users', userFixtures[0]);
+      expect(Object.keys(jsonStore._store['users'])).to.have.length(1);
+      
+      jsonStore._set('users', userFixtures[1]);
+      expect(Object.keys(jsonStore._store['users'])).to.have.length(2);
+      
+      expect(_.pluck(jsonStore._store['users'], 'name')).to.contain('Martin');
+    });
+
     it('will throw an error including the string if the JSON parse fails', function() {
       // Create an empty store for this test
       var jsonStore = new Amygdala(settings);
