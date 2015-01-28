@@ -502,8 +502,10 @@ Amygdala.prototype.find = function(type, query) {
   } else if (Object.prototype.toString.call(query) === '[object Object]') {
     // if query is an object, return the first match for the query
     return _.findWhere(store, query);
-  } else if (Object.prototype.toString.call(query) === '[object String]') {
-    // if query is a String, assume it stores the key/url value
+  } else {
+    // if query is a String or Number, assume it stores the key/url value
+    // Object.prototype.toString.call(query) === '[object String]'
+    // Object.prototype.toString.call(query) === '[object Number]'
     return store[query];
   }
 };
