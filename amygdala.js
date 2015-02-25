@@ -123,15 +123,20 @@ Amygdala.prototype._getURI = function(type, params) {
   }
   url = this._config.apiUrl + this._schema[type].url;
 
-  // if the `idAttribute` specified by the config 
+  // if the `idAttribute` specified by the schema or config
   // exists as a key in `params` append it's value to the url,
   // and remove it from `params` so it's not sent in the query string.
-  if (params && this._config.idAttribute in params) {
-    url += params[this._config.idAttribute];
-    delete params[this._config.idAttribute];
+  if (params && this._getIdAttribute(type) in params) {
+    url += params[this._getIdAttribute(type)];
+    delete params[this._getIdAttribute(type)];
   }
 
   return url;
+},
+
+Amygdala.prototype._getIdAttribute = function(type) {
+  // schema may override idAttribute
+  return this._schema[type].idAttribute || this._config.idAttribute;
 },
 
 Amygdala.prototype._emitChange = function(type) {
@@ -192,7 +197,7 @@ Amygdala.prototype._set = function(type, response, options) {
 
   _.each(response, function(obj) {
     // store the object under this._store['type']['id']
-    store[obj[this._config.idAttribute]] = obj;
+    store[obj[this._getIdAttribute(type)]] = obj;
 
     // handle oneToMany relations
     _.each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
@@ -210,7 +215,7 @@ Amygdala.prototype._set = function(type, response, options) {
           // and replace the list of objects within `obj`
           // by a list of `id's
           obj[relatedAttr] = _.map(related, function(item) {
-            return item[this._config.idAttribute];
+            return item[this._getIdAttribute(type)];
           }.bind(this));
         }
       }
@@ -229,7 +234,7 @@ Amygdala.prototype._set = function(type, response, options) {
           this._set(relatedType, [related]);
           // and replace the list of objects within `item`
           // by a list of `id's
-          obj[relatedAttr] = related[this._config.idAttribute];
+          obj[relatedAttr] = related[this._getIdAttribute(type)];
         }
       }
     }.bind(this));
@@ -286,7 +291,7 @@ Amygdala.prototype._remove = function(type, object) {
   this._emitChange(type);
 
   // delete object of type by id
-  delete this._store[type][object[this._config.idAttribute]]
+  delete this._store[type][object[this._getIdAttribute(type)]]
 };
 
 Amygdala.prototype._validateURI = function(url) {
@@ -382,12 +387,12 @@ Amygdala.prototype.update = function(type, object) {
   // object: object to update local and remote
   var url = object.url;
 
-  if (!url && this._config.idAttribute in object) {
+  if (!url && this._getIdAttribute(type) in object) {
     url = this._getURI(type, object);
   }
 
   if (!url) {
-    throw new Error('Missing required object.url or ' + this._config.idAttribute + ' attribute.');
+    throw new Error('Missing required object.url or ' + this._getIdAttribute(type) + ' attribute.');
   }
 
   return this._put(url, object)
@@ -413,12 +418,12 @@ Amygdala.prototype.remove = function(type, object) {
   // object: object to update local and remote
   var url = object.url;
 
-  if (!url && this._config.idAttribute in object) {
+  if (!url && this._getIdAttribute(type) in object) {
     url = this._getURI(type, object);
   }
 
   if (!url) {
-    throw new Error('Missing required object.url or ' + this._config.idAttribute + ' attribute.');
+    throw new Error('Missing required object.url or ' + this._getIdAttribute(type) + ' attribute.');
   }
 
   return this._delete(url, object)
