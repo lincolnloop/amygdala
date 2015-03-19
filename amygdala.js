@@ -18,6 +18,11 @@ var Amygdala = function(options) {
   this._schema = options.schema;
   this._headers = this._config.headers;
 
+  // if not apiUrl is defined, use current location origin
+  if (!this._config.apiUrl) {
+    this._config.apiUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+  }
+
   // memory data storage
   this._store = {};
   this._changeEvents = {};
