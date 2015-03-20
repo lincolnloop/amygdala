@@ -90,6 +90,7 @@ var store = new Amygdala({
   * url - relative path for each "table" (required)
   * orderBy - order by which you want to retrieve local cached data. eg (name, -name (for reverse))
   * parse - Accepts a parse method for cases when your API also returns extra meta data.
+  * idAttribute - overrides key attribute (if different in this schema)
 
 
 #### Schema relations:
