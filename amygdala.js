@@ -108,7 +108,12 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
 
   if (!_.isEmpty(options.headers)) {
     _.each(options.headers, function(value, key) {
-      request.setRequestHeader(key, value);
+      if (_.isFunction(value)) {
+        request.setRequestHeader(key,value());
+      }
+      else {
+        request.setRequestHeader(key, value);
+      }
     });
   }
 
