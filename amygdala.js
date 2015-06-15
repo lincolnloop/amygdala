@@ -94,7 +94,7 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
     if (request.status.toString().substr(0, 2) === '20') {
       deferred.resolve(request);
     } else {
-      deferred.reject(new Error('Request failed with status code ' + request.status), request);
+      deferred.reject(request);
     }
   };
 
