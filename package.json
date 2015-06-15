@@ -1,6 +1,6 @@
 {
   "name": "amygdala",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "RESTful HTTP library for JavaScript powered web applications",
   "keywords": [
     "REST",
