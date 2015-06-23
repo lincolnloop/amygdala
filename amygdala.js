@@ -372,6 +372,9 @@ Amygdala.prototype.add = function(type, object, options) {
   options = options || {};
   _.defaults(options, {'url': this._getURI(type)});
 
+  // Dynamic URL is now accepted in post
+  object.url ? options.url = object.url : null;
+  
   return this._post(options.url, object)
     .then(_.partial(this._setAjax, type).bind(this));
 };
