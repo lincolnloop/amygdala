@@ -310,6 +310,16 @@ describe('Amygdala', function() {
       expect(xhr.setRequestHeader).to.have.been.calledTwice
         .and.have.been.calledWith('Authorization', 'alpha');
     });
+    var obj2 = {'url': '/api/v2/team/anotherURL','name': 'The Alliance'};
+
+	  it('triggers an Ajax POST request with custom url', function() {
+		  store.add('teams', obj2);
+
+		  expect(xhr.open).to.have.been.calledOnce
+		    .and.have.been.calledWith('POST', 'http://localhost:8000/api/v2/team/anotherURL', true);
+		  expect(xhr.send).to.have.been.calledOnce
+		    .and.have.been.calledWith(JSON.stringify(obj2));
+	  });
 
   });
 
