@@ -2,7 +2,20 @@
 
 // CommonJS check so we can require dependencies
 if (typeof module === 'object' && module.exports) {
-  var _ = require('underscore');
+  var each = require('lodash/collection/each');
+  var partial = require('lodash/function/partial');
+  var debounce = require('lodash/function/debounce');
+  var clone = require('lodash/lang/clone');
+  var isString = require('lodash/lang/isString');
+  var isObject = require('lodash/lang/isObject');
+  var isFunction = require('lodash/lang/isFunction');
+  var isArray = require('lodash/lang/isArray');
+  var isEmpty = require('lodash/lang/isEmpty');
+  var defaults = require('lodash/object/defaults');
+  var map = require('lodash/collection/map');
+  var filter = require('lodash/collection/filter');
+  var findWhere = require('lodash/collection/findWhere');
+  var sortBy = require('lodash/collection/sortBy');
   var Q = require('q');
   var EventEmitter = require('wolfy87-eventemitter');
 }
@@ -28,7 +41,7 @@ var Amygdala = function(options) {
   this._changeEvents = {};
 
   if (this._config.localStorage) {
-    _.each(this._schema, function(value, key) {
+    each(this._schema, function(value, key) {
       // check each schema entry for localStorage data
       // TODO: filter out apiUrl and idAttribute 
       var storageCache = window.localStorage.getItem('amy-' + key);
@@ -45,7 +58,7 @@ var Amygdala = function(options) {
   }
 };
 
-Amygdala.prototype = _.clone(EventEmitter.prototype);
+Amygdala.prototype = clone(EventEmitter.prototype);
 
 // ------------------------------
 // Helper methods
@@ -53,11 +66,11 @@ Amygdala.prototype = _.clone(EventEmitter.prototype);
 Amygdala.prototype.serialize = function serialize(obj) {
   // Translates an object to a querystring
 
-  if (!_.isObject(obj)) {
+  if (!isObject(obj)) {
     return obj;
   }
   var pairs = [];
-  _.each(obj, function(value, key) {
+  each(obj, function(value, key) {
     pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
   });
   return pairs.join('&');
@@ -79,7 +92,7 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
   var query;
   options = options || {};
 
-  if (!_.isEmpty(options.data) && method === 'GET') {
+  if (!isEmpty(options.data) && method === 'GET') {
     query = this.serialize(options.data);
     url = url + '?' + query;
   }
@@ -102,13 +115,13 @@ Amygdala.prototype.ajax = function ajax(method, url, options) {
     deferred.reject(new Error('Unabe to send request to ' + JSON.stringify(url)));
   };
 
-  if (!_.isEmpty(options.contentType)) {
+  if (!isEmpty(options.contentType)) {
     request.setRequestHeader('Content-Type', options.contentType);
   }
 
-  if (!_.isEmpty(options.headers)) {
-    _.each(options.headers, function(value, key) {
-      if (_.isFunction(value)) {
+  if (!isEmpty(options.headers)) {
+    each(options.headers, function(value, key) {
+      if (isFunction(value)) {
         request.setRequestHeader(key,value());
       }
       else {
@@ -153,7 +166,7 @@ Amygdala.prototype._emitChange = function(type) {
 
   // TODO: Add tests for debounced events
   if (!this._changeEvents[type]) {
-    this._changeEvents[type] = _.debounce(_.partial(function(type) {
+    this._changeEvents[type] = debounce(partial(function(type) {
       // emit changes events
       this.emit('change', type);
       // change:<type>
@@ -180,7 +193,7 @@ Amygdala.prototype._set = function(type, response, options) {
   var schema = this._schema[type];
   var wrappedResponse = false;
 
-  if (_.isString(response)) {
+  if (isString(response)) {
     // If the response is a string, try JSON.parse.
     try {
       response = JSON.parse(response);
@@ -189,13 +202,13 @@ Amygdala.prototype._set = function(type, response, options) {
     }
   }
 
-  if (!_.isArray(response)) {
+  if (!isArray(response)) {
     // The response isn't an array. We need to figure out how to handle it.
     if (schema.parse) {
       // Prefer the schema's parse method if one exists.
       response = schema.parse(response);
       // if it's still not an array, wrap it around one
-      if (!_.isArray(response)) {
+      if (!isArray(response)) {
         response = [response];
       }
     } else {
@@ -205,12 +218,12 @@ Amygdala.prototype._set = function(type, response, options) {
     }
   }
 
-  _.each(response, function(obj) {
+  each(response, function(obj) {
     // store the object under this._store['type']['id']
     store[obj[this._getIdAttribute(type)]] = obj;
 
     // handle oneToMany relations
-    _.each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
+    each(this._schema[type].oneToMany, function(relatedType, relatedAttr) {
       var related = obj[relatedAttr];
       // check if obj has a `relatedAttr` that is defined as a relation
       if (related) {
@@ -224,7 +237,7 @@ Amygdala.prototype._set = function(type, response, options) {
           this._set(relatedType, related);
           // and replace the list of objects within `obj`
           // by a list of `id's
-          obj[relatedAttr] = _.map(related, function(item) {
+          obj[relatedAttr] = map(related, function(item) {
             return item[this._getIdAttribute(type)];
           }.bind(this));
         }
@@ -232,7 +245,7 @@ Amygdala.prototype._set = function(type, response, options) {
     }.bind(this));
 
     // handle foreignKey relations
-    _.each(this._schema[type].foreignKey, function(relatedType, relatedAttr) {
+    each(this._schema[type].foreignKey, function(relatedType, relatedAttr) {
       var related = obj[relatedAttr];
       // check if obj has a `relatedAttr` that is defined as a relation
       if (related) {
@@ -252,7 +265,7 @@ Amygdala.prototype._set = function(type, response, options) {
     // obj.related()
     // set up a related method to fetch other related objects
     // as defined in the schema for the store.
-    obj.getRelated = _.partial(function(schema, obj, attributeName) {
+    obj.getRelated = partial(function(schema, obj, attributeName) {
       if (schema.oneToMany && attributeName in schema.oneToMany) {
         //
         // if oneToMany relation
@@ -340,10 +353,10 @@ Amygdala.prototype.get = function(type, params, options) {
 
   // Default to the URI for 'type'
   options = options || {};
-  _.defaults(options, {'url': this._getURI(type, params)});
+  defaults(options, {'url': this._getURI(type, params)});
 
   return this._get(options.url, params)
-    .then(_.partial(this._setAjax, type).bind(this));
+    .then(partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._post = function(url, data) {
@@ -370,10 +383,10 @@ Amygdala.prototype.add = function(type, object, options) {
 
   // Default to the URI for 'type'
   options = options || {};
-  _.defaults(options, {'url': this._getURI(type)});
+  defaults(options, {'url': this._getURI(type)});
 
   return this._post(options.url, object)
-    .then(_.partial(this._setAjax, type).bind(this));
+    .then(partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._put = function(url, data) {
@@ -406,7 +419,7 @@ Amygdala.prototype.update = function(type, object) {
   }
 
   return this._put(url, object)
-    .then(_.partial(this._setAjax, type).bind(this));
+    .then(partial(this._setAjax, type).bind(this));
 };
 
 Amygdala.prototype._delete = function(url, data) {
@@ -437,7 +450,7 @@ Amygdala.prototype.remove = function(type, object) {
   }
 
   return this._delete(url, object)
-    .then(_.partial(this._remove, type, object).bind(this));
+    .then(partial(this._remove, type, object).bind(this));
 };
 
 // ------------------------------
@@ -477,10 +490,10 @@ Amygdala.prototype.findAll = function(type, query) {
   }
   if (query === undefined) {
     // query is empty, no object is returned
-    results = _.map(store, function(item) { return item; });
+    results = map(store, function(item) { return item; });
   } else if (Object.prototype.toString.call(query) === '[object Object]') {
     // if query is an object, assume it specifies filters.
-    results = _.filter(store, function(item) { return _.findWhere([item], query); });
+    results = filter(store, function(item) { return findWhere([item], query); });
   } else {
     throw new Error('Invalid query for findAll.');
   }
@@ -493,7 +506,7 @@ Amygdala.prototype.findAll = function(type, query) {
       // if we have two matches, we have a reverse flag
       orderBy = orderBy.replace('-', '');
     }
-    results = _.sortBy(results, function(item) {
+    results = sortBy(results, function(item) {
       return item[orderBy].toString().toLowerCase();
     }.bind(this));
 
@@ -516,7 +529,7 @@ Amygdala.prototype.find = function(type, query) {
     return  undefined;
   } else if (Object.prototype.toString.call(query) === '[object Object]') {
     // if query is an object, return the first match for the query
-    return _.findWhere(store, query);
+    return findWhere(store, query);
   } else {
     // if query is a String or Number, assume it stores the key/url value
     // Object.prototype.toString.call(query) === '[object String]'

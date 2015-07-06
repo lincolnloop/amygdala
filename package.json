@@ -1,6 +1,6 @@
 {
   "name": "amygdala",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "RESTful HTTP library for JavaScript powered web applications",
   "keywords": [
     "REST",
@@ -57,7 +57,6 @@
     "sinon": "^1.9.0",
     "sinon-chai": "^2.5.0",
     "xmlhttprequest": "^1.6.0",
-    "lodash": "^2.4.1",
     "gulp-rename": "^1.2.0",
     "gulp-wrap": "^0.3.0",
     "gulp": "^3.5.6",
@@ -65,7 +64,7 @@
     "gulp-uglify": "^0.2.1"
   },
   "dependencies": {
-    "underscore": "^1.8.2",
+    "lodash": "^3.10.0",
     "q": "^1.0.1",
     "wolfy87-eventemitter": "^4.2.6"
   }

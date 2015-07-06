@@ -1,7 +1,7 @@
 /* global describe, it, before, after, beforeEach */
 'use strict';
 
-var _ = require('underscore');
+var _ = require('lodash');
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
