@@ -36,7 +36,7 @@ Download the latest [amygdala.js](https://github.com/lincolnloop/amygdala/blob/m
 
 ##### Dependencies:
 
-* [underscore](https://github.com/jashkenas/underscore): ^1.6.0
+* [lodash](https://lodash.com): ^3.10.1
 * [q](https://github.com/kriskowal/q): ^1.0.1
 * [Wolfy87/EventEmitter](https://github.com/Wolfy87/EventEmitter): ^4.2.6
 
